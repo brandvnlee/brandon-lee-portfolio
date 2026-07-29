@@ -1,0 +1,934 @@
+/* ==========================================================================
+   FONT
+
+   The family is deliberately named "Display" rather than after a specific
+   typeface. To move to a licensed Neue Haas Grotesk Display 95 Black, replace
+   public/fonts/display.woff2 and drop the `font-weight` range to `900`.
+
+   If you licence only the Black cut, the display tiers are unaffected — they
+   are already 900. The text tiers below 30px fall back to Black at reduced
+   opacity, which is what the --w-* ladder exists for. The better purchase is
+   NHG *Display* 95 Black for the display tiers plus NHG *Text* 55/65 for
+   everything at 30px and down: one family at two optical sizes, which is more
+   rigorous than stretching one cut across a 26:1 size range.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Display";
+  src: url("/fonts/display.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==========================================================================
+   TOKENS
+   ========================================================================== */
+
+:root {
+  /* Not #000 and not #fff, for two reasons. The renders contain genuine blacks;
+     on a pure black page the vehicles dissolve at their own edges instead of
+     sitting on a surface. And 21:1 is exactly where light-on-dark halation is
+     worst — a 300px white Black cap on pure black visibly blooms at the stems.
+     Both values are fractionally cool, so the chrome and paint in the renders
+     read as material rather than as sepia. */
+  --ink: #0b0c0d;
+  --paper: #f4f5f6;
+  /* Pure white, reserved for the hovered index title so the hover has a real
+     step up to land on. */
+  --paper-hi: #ffffff;
+
+  --bg: var(--ink);
+  --fg: var(--paper);
+
+  /* A tint, not a card. Above ~8% white this stops reading as a tint block. */
+  --tint: #141414;
+
+  /* --------------------------------------------------------------------------
+     RULES
+
+     Three tints, two thicknesses. On a dark ground hierarchy has to be carried
+     by tint rather than thickness — the difference between 1px and 2px at low
+     contrast is nearly unreadable, while 22 / 40 / 60% white is instantly
+     legible. Mixed with the ground rather than left transparent, so a rule
+     reads at one value everywhere instead of shifting over whatever is behind
+     it.
+
+     hair  — subdivision inside a field that is already framed.
+     rule  — every row boundary and section break. The workhorse.
+     heavy — three places only: the footer, the next-project link, the NDA
+             seal. A fourth use and it stops meaning "major boundary".
+     -------------------------------------------------------------------------- */
+  --rule-hair: color-mix(in srgb, var(--fg) 22%, var(--bg));
+  --rule: color-mix(in srgb, var(--fg) 40%, var(--bg));
+  --rule-heavy: color-mix(in srgb, var(--fg) 60%, var(--bg));
+
+  /* --------------------------------------------------------------------------
+     GRID
+
+     --margin is the page margin, --gap the space between columns. They used to
+     be the same token, which is why content had to dodge the column lines.
+
+     The registration rules sit in the CENTRE of the gutter between columns 2
+     and 3, never on a column edge, so type never has to clear them. At 1440px
+     that formula resolves to 18.5% — the value that was previously hardcoded,
+     now derived, which is what lets content actually be aligned to it.
+     -------------------------------------------------------------------------- */
+  --margin: clamp(1.25rem, 3.5vw, 3.5rem);
+  --gap: clamp(0.75rem, 1.4vw, 1.25rem);
+  --cols: 12;
+  --col: calc(
+    (100% - (2 * var(--margin)) - (11 * var(--gap))) / var(--cols)
+  );
+  --reg-a: calc(var(--margin) + (2 * var(--col)) + (1.5 * var(--gap)));
+
+  /* --------------------------------------------------------------------------
+     TYPE SCALE
+
+     Seven tiers. There used to be three, which is why hierarchy had to be
+     expressed with opacity alone: one token was running the masthead
+     statement, the case summary, every paragraph of body copy and a button.
+     Templates have three sizes; systems have seven and use each for a reason.
+     -------------------------------------------------------------------------- */
+
+  /* Fallback only. Index titles are fitted to a measure — see .work__title. */
+  --fs-display: clamp(3.5rem, 21vw, 30rem);
+  /* Deliberately smaller than the index: on a case page the renders are the
+     argument and the title is the label on the drawing. */
+  --fs-title: clamp(3.25rem, 11vw, 11.5rem);
+  --fs-next: clamp(2.5rem, 7.5vw, 7.5rem);
+  --fs-state: clamp(1.5rem, 2.6vw + 0.5rem, 3.25rem);
+  --fs-deck: clamp(1.3125rem, 0.85vw + 1rem, 1.875rem);
+  --fs-body: clamp(1rem, 0.25vw + 0.9375rem, 1.1875rem);
+  --fs-sub: clamp(0.8125rem, 0.3vw + 0.75rem, 0.9375rem);
+  --fs-micro: 0.72rem;
+  --fs-nano: 0.625rem;
+
+  /* --------------------------------------------------------------------------
+     TRACKING LADDER
+
+     Tracking is a function of optical size, not a constant. Tightening as size
+     grows and opening as it shrinks is the most legible signal that type has
+     been tuned rather than set.
+     -------------------------------------------------------------------------- */
+  --track-display: -0.055em;
+  --track-title: -0.042em;
+  --track-next: -0.038em;
+  --track-state: -0.028em;
+  --track-deck: -0.018em;
+  /* Secondary copy is set in capitals, which need opening up rather than
+     tightening. */
+  --track-caps: 0.02em;
+  --track-head: 0.16em;
+  --track-body: -0.004em;
+  --track-sub: 0.1em;
+  /* Blooming glyphs need more room between them or small caps clog into a grey
+     bar. On a dark ground tracking does the work weight cannot. */
+  --track-micro: 0.14em;
+  --track-nano: 0.18em;
+
+  /* --------------------------------------------------------------------------
+     WEIGHT LADDER
+
+     Four steps, replacing nine unrelated opacity values. This is also the
+     escape hatch if the licensed cut is Black only: on this ground, Black at
+     0.58 reads convincingly as a Medium at full strength.
+     -------------------------------------------------------------------------- */
+  --w-loud: 1;
+  --w-mid: 0.74;
+  --w-quiet: 0.58;
+  --w-faint: 0.4;
+
+  /* Motion. Mirrored in lib/motion.ts so GSAP and CSS never drift apart. */
+  --dur-fast: 0.4s;
+  --dur-base: 0.8s;
+  --dur-slow: 1.6s;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+/* Six columns below this, with the registration rule at 1 of 6 — the same
+   optical position, about 18%. */
+@media (max-width: 48rem) {
+  :root {
+    --cols: 6;
+    --reg-a: calc(var(--margin) + var(--col) + (0.5 * var(--gap)));
+  }
+}
+
+/* ==========================================================================
+   RESET
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* No `scroll-behavior: smooth` here. Lenis owns the scroll, so CSS smoothing is
+   redundant — and Next detects it and stops resetting the scroll position on
+   route changes, which is what left "Next project" opening part way down the
+   new page. */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Display", system-ui, sans-serif;
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  letter-spacing: var(--track-body);
+  /* Grayscale antialiasing thins glyphs slightly against subpixel rendering,
+     which happens to counteract the bloom of light type on a dark ground. */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-kerning: normal;
+  font-variant-numeric: tabular-nums;
+  overflow-x: hidden;
+}
+
+img,
+picture {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+::selection {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+/* ==========================================================================
+   TYPE PRIMITIVES
+   ========================================================================== */
+
+.micro {
+  font-size: var(--fs-micro);
+  font-weight: 450;
+  letter-spacing: var(--track-micro);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.nano {
+  font-size: var(--fs-nano);
+  font-weight: 450;
+  letter-spacing: var(--track-nano);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   SPLIT TEXT
+
+   Both variants set their resting state here rather than in JavaScript, so the
+   type never paints in its finished position for a frame before motion starts.
+
+   `enter` is opacity only — no offset. Type that slides into place reads as
+   soft; type that cuts on reads as a panel taking power.
+   -------------------------------------------------------------------------- */
+
+.word,
+.char {
+  display: inline-block;
+}
+
+/* Stops a split line breaking mid-word, since every character is its own
+   inline-block and would otherwise be a valid break point. */
+.word {
+  white-space: nowrap;
+}
+
+[data-split="enter"] .char {
+  opacity: 0;
+  will-change: opacity;
+}
+
+/* 0.24, not the 0.16 this was on paper: at 16% white on this ground the copy
+   reads as absent rather than as dimmed. Matches DIM in Motion.tsx. */
+[data-split="illuminate"] .word {
+  opacity: 0.24;
+}
+
+/* Neither variant can arrive without JavaScript, so both give up their resting
+   state rather than leaving the page blank. */
+@media (scripting: none) {
+  [data-split] .char,
+  [data-split] .word {
+    opacity: 1 !important;
+  }
+}
+
+/* ==========================================================================
+   RULES
+
+   Every hairline is an element rather than a border, so it can be drawn out
+   from its leading edge instead of simply appearing. Horizontals always grow
+   from the left; a rule that grows from the right or the centre reads as a UI
+   transition rather than a drawn line.
+   ========================================================================== */
+
+.rule {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--rule);
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+.rule--heavy {
+  height: 2px;
+  background: var(--rule-heavy);
+}
+
+.rule--hair {
+  background: var(--rule-hair);
+}
+
+@media (scripting: none) {
+  .rule {
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--margin);
+  color: var(--paper);
+}
+
+/* The blend mode this used to carry was solving "light page, dark renders" — a
+   problem that stopped existing when the page went dark. Worse, difference
+   against white over a mid-grey render yields mid-grey, which is most of the
+   studio plates: the header would have vanished exactly where it matters. */
+.header a {
+  opacity: var(--w-mid);
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.header a:hover {
+  opacity: var(--w-loud);
+}
+
+.header__nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* ==========================================================================
+   WORK INDEX — the landing page
+
+   Titles stay real text: selectable, indexable, and legible to a screen reader
+   through the aria-label that SplitText restores.
+   ========================================================================== */
+
+.work {
+  padding-top: 42svh;
+}
+
+.work__masthead {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.75rem);
+  padding: 0 var(--margin) clamp(4rem, 12vh, 9rem);
+}
+
+.work__label {
+  display: flex;
+  gap: 1rem;
+  opacity: var(--w-quiet);
+}
+
+.work__count {
+  opacity: var(--w-mid);
+}
+
+/* All caps at a light weight. Caps have no descenders, so the three
+   hand-broken lines can be set close without colliding, and the light weight
+   keeps a block of capitals from shouting over the titles below it. Tracking
+   goes positive: caps need air between them where lowercase does not. */
+.work__statement {
+  font-size: var(--fs-state);
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+}
+
+.work__statementLine {
+  display: block;
+}
+
+.work__row {
+  position: relative;
+  /* Titles are sized against the row, not the viewport: container query units
+     exclude the scrollbar, so the fitted measure is exact. */
+  container-type: inline-size;
+}
+
+.work__end {
+  position: relative;
+}
+
+/* The number sits in the first two columns and the subtitle starts on the
+   registration boundary. No inline padding on the row itself — the cells carry
+   it, so the column boundaries land on the true page width. */
+.work__link {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--reg-a) 1fr;
+  align-items: baseline;
+  gap: 0.5rem 0;
+  padding-block: clamp(1.25rem, 2.5vw, 2.25rem);
+  isolation: isolate;
+}
+
+.work__num {
+  padding-left: var(--margin);
+  opacity: var(--w-quiet);
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.work__sub {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-left: var(--gap);
+  opacity: var(--w-quiet);
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+/* A hard-edged field. A pill is the one un-tactical shape on a page built from
+   hairlines and right angles. */
+.work__tag {
+  border: 1px solid var(--rule);
+  background: var(--tint);
+  padding: 0.25rem 0.5rem 0.2rem;
+  font-size: var(--fs-nano);
+  letter-spacing: var(--track-nano);
+}
+
+/* --------------------------------------------------------------------------
+   FITTED TITLES
+
+   Each title's size falls out of its letter count, so every right edge lands
+   on the same datum. --units is the sum of the cap advances in em minus the
+   tracking, measured per word: four words of different lengths, two flush
+   vertical edges.
+   -------------------------------------------------------------------------- */
+
+.work__title {
+  grid-column: 1 / -1;
+  font-size: clamp(
+    3.5rem,
+    calc((100cqw - (2 * var(--margin))) / var(--units, 4.48)),
+    36rem
+  );
+  font-weight: 900;
+  /* Safe below 1 because the strings are caps only with no descenders; it
+     pulls the row box tight to the cap height so the rules sit close to the
+     letterforms rather than floating in air. */
+  line-height: 0.8;
+  letter-spacing: var(--track-display);
+  text-transform: uppercase;
+  padding-left: var(--margin);
+  /* Optical left datum. In em, so it scales with the fitted size. */
+  margin-left: -0.055em;
+  color: var(--fg);
+  transition:
+    color var(--dur-base) var(--ease-out),
+    opacity var(--dur-base) var(--ease-out);
+}
+
+/* --------------------------------------------------------------------------
+   HAND KERNING
+
+   Splitting into inline-blocks disables kerning, and at --track-display the
+   worst pairs stop being tight and start colliding: measured against this cut,
+   MANTRA's RA had an ink gap of -0.037em (overlapping) and TENET's ET -0.003em.
+
+   These corrections even out the ink gap per pair rather than making every gap
+   equal — flat-sided pairs need the most measured space to look right, round
+   and diagonal shapes need less because the form recedes. Applied to the
+   display tiers only; at label size the split costs nothing.
+
+   Re-measure after swapping the font. The method: canvas measureText per
+   glyph, gap = rsb(first) + letter-spacing + lsb(second).
+   -------------------------------------------------------------------------- */
+
+.work__title .char[data-pair="RA"],
+.case__title .char[data-pair="RA"],
+.case__nextTitle .char[data-pair="RA"] {
+  margin-left: 0.047em;
+}
+
+.work__title .char[data-pair="ET"],
+.case__title .char[data-pair="ET"],
+.case__nextTitle .char[data-pair="ET"] {
+  margin-left: 0.03em;
+}
+
+.work__title .char[data-pair="OA"],
+.case__title .char[data-pair="OA"],
+.case__nextTitle .char[data-pair="OA"] {
+  margin-left: 0.027em;
+}
+
+.work__title .char[data-pair="ST"],
+.case__title .char[data-pair="ST"],
+.case__nextTitle .char[data-pair="ST"] {
+  margin-left: 0.023em;
+}
+
+.work__title .char[data-pair="RO"],
+.case__title .char[data-pair="RO"],
+.case__nextTitle .char[data-pair="RO"] {
+  margin-left: 0.017em;
+}
+
+.work__title .char[data-pair="MA"],
+.case__title .char[data-pair="MA"],
+.case__nextTitle .char[data-pair="MA"] {
+  margin-left: 0.008em;
+}
+
+/* The one pair that was too open rather than too tight. */
+.work__title .char[data-pair="NE"],
+.case__title .char[data-pair="NE"],
+.case__nextTitle .char[data-pair="NE"] {
+  margin-left: -0.025em;
+}
+
+/* Measured in the browser against the Archivo stand-in at the tracking above,
+   then reduced by the 0.055em sidebearing correction so the right edge lands on
+   the datum rather than past it. Re-measure after the NHG swap: these values
+   are specific to the cut and to --track-display. */
+[data-slug="mantra"] .work__title {
+  --units: 4.531;
+}
+
+[data-slug="tenet"] .work__title {
+  --units: 3.396;
+}
+
+[data-slug="nomad"] .work__title {
+  --units: 3.872;
+}
+
+[data-slug="roadster"] .work__title {
+  --units: 5.683;
+}
+
+/* --------------------------------------------------------------------------
+   The render sits behind the title and comes up on hover. CSS only — a hover
+   reveal needs no JavaScript, and this way it works before hydration.
+   -------------------------------------------------------------------------- */
+
+.work__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.work__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.06);
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.work__link:hover .work__media,
+.work__link:focus-visible .work__media {
+  /* Held back rather than taken to 1: white Black caps are fine over a dark
+     render until a specular highlight passes behind a stem. The fix is the
+     scrim, never a text-shadow. */
+  opacity: 0.62;
+}
+
+.work__link:hover .work__media img,
+.work__link:focus-visible .work__media img {
+  transform: scale(1);
+}
+
+.work__link:hover .work__title,
+.work__link:focus-visible .work__title {
+  color: var(--paper-hi);
+}
+
+.work__link:hover .work__num,
+.work__link:hover .work__sub,
+.work__link:focus-visible .work__num,
+.work__link:focus-visible .work__sub {
+  opacity: var(--w-loud);
+}
+
+.work__link:hover .work__edge,
+.work__link:focus-visible .work__edge {
+  background: var(--rule-heavy);
+}
+
+/* Selecting one thing by quieting everything else is a better gesture than
+   lighting up the target, and unlike a colour flip it survives on a dark
+   page. */
+.work__list:hover .work__row:not(:hover) .work__title,
+.work__list:hover .work__row:not(:hover) .work__num,
+.work__list:hover .work__row:not(:hover) .work__sub {
+  opacity: var(--w-faint);
+}
+
+.work__redacted {
+  position: absolute;
+  inset: 0;
+  background: var(--tint);
+}
+
+/* Without hover there is nothing to reveal, so the render is simply present. */
+@media (hover: none) {
+  .work__media {
+    opacity: 0.62;
+  }
+
+  .work__num,
+  .work__sub {
+    opacity: var(--w-mid);
+  }
+
+  .work__link {
+    padding-block: clamp(2rem, 6vw, 3rem);
+  }
+}
+
+@media (max-width: 48rem) {
+  /* The hand-broken lines are set for a wide measure. At this width holding
+     them produces orphans, so the statement runs as one block and rags
+     itself. */
+  .work__statementLine {
+    display: inline;
+  }
+
+  .work__link {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .work__sub {
+    padding-left: var(--margin);
+    padding-right: var(--margin);
+  }
+}
+
+/* ==========================================================================
+   CASE STUDY
+   ========================================================================== */
+
+.case__head {
+  display: grid;
+  gap: 1.25rem;
+  padding: 32svh var(--margin) clamp(3rem, 8vw, 7rem);
+  max-width: 68rem;
+}
+
+.case__title {
+  font-size: var(--fs-title);
+  font-weight: 900;
+  line-height: 0.86;
+  letter-spacing: var(--track-title);
+  text-transform: uppercase;
+  margin-left: -0.042em;
+}
+
+/* Matches the masthead statement: capitals at a light weight. */
+.case__summary {
+  font-size: var(--fs-deck);
+  font-weight: 300;
+  line-height: 1.35;
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  max-width: 42rem;
+}
+
+/* One line of spaced caps rather than the tinted table this replaced — that
+   read as a UI panel dropped onto an editorial page. */
+.case__credits {
+  margin-top: clamp(1rem, 3vw, 2rem);
+  line-height: 1.6;
+  opacity: var(--w-faint);
+  max-width: 42rem;
+}
+
+.case__film {
+  display: grid;
+  gap: 0.75rem;
+  padding-inline: var(--margin);
+  margin-bottom: clamp(1rem, 3vw, 2.5rem);
+}
+
+.case__film iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  background: var(--tint);
+}
+
+.case__filmCaption {
+  opacity: var(--w-faint);
+}
+
+/* Full width, so the section break belongs to the page rather than to the
+   text column. The measure lives on the inner element. */
+/* Was 14vh top and bottom, which put nearly a third of a screen of nothing on
+   both sides of three lines of text. A section break needs to be legible as a
+   break, not to be a page of its own. */
+.case__section {
+  position: relative;
+  padding-block: clamp(3.5rem, 8vh, 6rem);
+}
+
+.case__measure {
+  display: grid;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  padding-inline: var(--margin);
+  max-width: 44rem;
+}
+
+/* Same optical size as the summary, opposite case and opposite tracking. Using
+   case and tracking rather than size to separate two roles at one size is what
+   makes this a system instead of a list of decisions. */
+.case__sectionHeading {
+  display: flex;
+  gap: 1rem;
+  font-size: var(--fs-deck);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: var(--track-head);
+  text-transform: uppercase;
+}
+
+.case__sectionOrdinal {
+  opacity: var(--w-faint);
+}
+
+/* Leading goes UP on a dark ground, not down: at this size white lines bind to
+   each other vertically the way glyphs bind horizontally. */
+.case__body {
+  font-size: var(--fs-body);
+  font-weight: 440;
+  line-height: 1.5;
+  letter-spacing: var(--track-body);
+  max-width: 36rem;
+  text-wrap: pretty;
+}
+
+/* --------------------------------------------------------------------------
+   PLATES
+
+   No rules and no captions between plates — the plate edges are the rules, and
+   ruling between images is the fastest way to make an image grid look like a
+   CMS.
+   -------------------------------------------------------------------------- */
+
+/* One plate per row at the full width of the measure.
+
+   This replaced a two-up grid. Halving every render was the wrong default when
+   the work is the point, and because the source mixes 16:9 with 4:5 the grid
+   left ragged rows wherever heights disagreed and an outright empty cell
+   wherever a group had an odd count. A single column cannot leave a hole.
+
+   The gap is deliberately tight. Wide gutters between full-width plates read as
+   the page falling apart; a hairline of ground between them reads as a
+   sequence. */
+.case__plates {
+  display: grid;
+  gap: clamp(0.75rem, 1.6vw, 1.25rem);
+  padding-inline: var(--margin);
+}
+
+.case__row {
+  display: grid;
+  gap: clamp(0.75rem, 1.6vw, 1.25rem);
+}
+
+/* Portraits pair up to fill a row. Both halves are held at 4:5 so the row is
+   flush top and bottom — the source portraits sit between 0.80 and 0.84, and
+   left at their own ratios one side of the pair overhangs the other by a few
+   dozen pixels, which reads as a mistake. 4:5 is the ratio most of them already
+   are, so this costs a sliver off the widest one and nothing off the rest. */
+.case__row--pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.case__row--pair img {
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center;
+}
+
+.case__plate {
+  width: 100%;
+}
+
+.case__plate img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The single concession to cropping: a portrait with no portrait to pair with
+   would be taller than two viewports at full width, so it is cut to 3:2 from
+   the centre. Nothing else on the site loses pixels. */
+.case__plate[data-crop] img {
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 60rem) {
+  .case__row--pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* One column already gives a portrait room, so let them keep their full
+     frames — nothing needs cropping to keep a row flush when a row is one
+     image. */
+  .case__plate[data-crop] img,
+  .case__row--pair img {
+    aspect-ratio: auto;
+  }
+}
+
+/* Structurally identical to an index row, because it is one. */
+.case__next {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  padding: clamp(4rem, 11vh, 8rem) var(--margin);
+  margin-top: clamp(2.5rem, 7vh, 5rem);
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.case__next:hover {
+  opacity: var(--w-quiet);
+}
+
+.case__nextTitle {
+  font-size: var(--fs-next);
+  font-weight: 900;
+  line-height: 0.86;
+  letter-spacing: var(--track-next);
+  text-transform: uppercase;
+  margin-left: -0.038em;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+.footer {
+  position: relative;
+  padding: clamp(4rem, 12svh, 9rem) var(--margin) var(--margin);
+}
+
+.footer__cols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem 4rem;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.footer__list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.footer__quiet {
+  opacity: var(--w-faint);
+}
+
+.footer__link {
+  display: inline-flex;
+  gap: 0.75rem;
+}
+
+.footer__link span:last-child {
+  position: relative;
+}
+
+.footer__link span:last-child::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.footer__link:hover span:last-child::after {
+  transform: scaleX(1);
+}
+
+/* ==========================================================================
+   REDUCED MOTION
+
+   Every split unit is already lit, every rule is already drawn, and nothing
+   scrubs. If the composition does not work standing still, it is not well
+   designed.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-split] .char,
+  [data-split] .word {
+    opacity: 1 !important;
+  }
+
+  .rule {
+    transform: none !important;
+  }
+}
