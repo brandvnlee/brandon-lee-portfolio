@@ -1,0 +1,18 @@
+# The Vercel CLI does NOT read .gitignore when deciding what to upload, so
+# /public/work being gitignored is not enough — without this file the CLI ships
+# the whole source render archive. That has two consequences, both bad:
+#
+#   1. The masters get served publicly at /work/<slug>/<file>. Verified: a
+#      1.3MB PNG returned HTTP 200 from a deployment.
+#   2. Every deploy uploads ~250MB instead of ~7MB.
+#
+# `npm run media` derives the WebP in public/media that the site actually
+# serves. The masters stay on disk as the master copy and never ship.
+public/work
+
+# Excluded by the CLI's own defaults too, but named here because a
+# .vercelignore replaces .gitignore rather than adding to it.
+node_modules
+.next
+.git
+.env*
