@@ -112,6 +112,12 @@ const nomad = [
 
 const keys = (slug: string, files: string[]) => files.map((file) => `${slug}/${file}`);
 
+/**
+ * Array order is the running order. It drives the numbering on the index, the
+ * "NN / NN" counter on each case page, and the next-project chain, so reordering
+ * here is the only edit a reordering needs. Roadster stays last: it is the one
+ * page with no next link, so it has to be the end of the chain.
+ */
 export const projects: Project[] = [
   {
     slug: "mantra",
@@ -139,30 +145,6 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "tenet",
-    title: "Tenet",
-    subtitle: "Roadster concept — proportion study",
-    summary:
-      "Proportion first: a mid-engine package pushed until the cabin, wheel and shoulder found a stance that needed no ornament to look fast standing still.",
-    tools: ["Cinema 4D", "Redshift", "Photoshop"],
-    hero: "tenet/roadster_studio_side_MAGNIFIC.jpg",
-    images: keys("tenet", tenet),
-    sections: [
-      {
-        heading: "Package",
-        body: "Placeholder. The hard points you worked to, and what they forced on the proportion.",
-      },
-      {
-        heading: "Stance",
-        body: "Placeholder. How the wheel-to-body relationship was tuned, and what you rejected on the way.",
-      },
-      {
-        heading: "Studio",
-        body: "Placeholder. Note the lighting setup and why the studio plates are shot the way they are.",
-      },
-    ],
-  },
-  {
     slug: "nomad",
     title: "Nomad",
     subtitle: "Off-road platform — structure as identity",
@@ -183,6 +165,30 @@ export const projects: Project[] = [
       {
         heading: "Cabin",
         body: "Placeholder. How the interior resolves around the structure, and the ingress logic.",
+      },
+    ],
+  },
+  {
+    slug: "tenet",
+    title: "Tenet",
+    subtitle: "Roadster concept — proportion study",
+    summary:
+      "Proportion first: a mid-engine package pushed until the cabin, wheel and shoulder found a stance that needed no ornament to look fast standing still.",
+    tools: ["Cinema 4D", "Redshift", "Photoshop"],
+    hero: "tenet/roadster_studio_side_MAGNIFIC.jpg",
+    images: keys("tenet", tenet),
+    sections: [
+      {
+        heading: "Package",
+        body: "Placeholder. The hard points you worked to, and what they forced on the proportion.",
+      },
+      {
+        heading: "Stance",
+        body: "Placeholder. How the wheel-to-body relationship was tuned, and what you rejected on the way.",
+      },
+      {
+        heading: "Studio",
+        body: "Placeholder. Note the lighting setup and why the studio plates are shot the way they are.",
       },
     ],
   },
