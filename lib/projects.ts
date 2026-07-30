@@ -79,28 +79,44 @@ export type Project = {
  *
  * `mantra_front3q_VERTICAL.png` is deliberately absent: at 1236x2197 it stood
  * several screens tall at any usable width.
+ *
+ * Mantra is placed section by section rather than split evenly, so the engine
+ * plates sit under the statement about the engine.
  */
-const mantra: ImageEntry[] = [
+
+/** The opening run: the silhouette, the hero, and the face it leads with. */
+const mantraOpening: ImageEntry[] = [
   "mantra_sil_intro_EDIT.jpg",
   "mantra_front3q_MAGNIFIC.jpg",
   // Two reads of the same face, dead-on and from above. They answer each other,
   // so they share a row rather than repeating the frame twice at full width.
   ["mantra_face_head_MAGNIFIC.jpg", "mantra_face_tiltdown_MAGNIFIC_2.jpg"],
   "headlight_sequence.jpg",
+];
+
+/** _1 — the form itself, read front to rear. */
+const mantraForm: ImageEntry[] = [
   "mantra_leftside_MAGNIFIC.jpg",
   // The wing and the surface under it — one set, one row.
   ["winglets_magnific.jpg", "front_sequence_compressed.jpg"],
   "mantra_rear3q_MAGNIFIC.jpg",
   "mantra_rear_left_MAGNIFIC.jpg",
   "mantra_rear_tire_MAGNIFIC.jpg",
+];
+
+/**
+ * _2 — the engine and what it is heard through. The statement names the V8 and
+ * the quad X-pipe, so the section opens on the bay itself and then on the rear
+ * the exhaust exits, rather than arriving at them four plates later.
+ */
+const mantraEngine: ImageEntry[] = [
+  "enginebay_v2.png",
   "mantra_rear_topangledown_MAGNIFIC.jpg",
   "tailight_sequence_MAGNIFIC.jpg",
-  // The same engine bay twice: lit, then as the clay pass. Deliberately not
-  // paired — the clay is the only portrait left on the page, and holding the two
-  // at one ratio either letterboxes it to half the scale of its partner or crops
-  // it hard. Alone it takes the standard 3:2 crop instead, which trims the top
-  // and bottom of the bay and leaves the X-pipe crossing centred and whole.
-  "enginebay_v2.png",
+];
+
+/** _3 — how it was built: the clay passes and the sketches under them. */
+const mantraProcess: ImageEntry[] = [
   "engine_black.png",
   "perspective_front_black.jpg",
   "perspective_rear_black.jpg",
@@ -218,18 +234,21 @@ export const projects: Project[] = [
     ],
     hero: "mantra/mantra_front3q_MAGNIFIC.jpg",
     video: "3FTGU0MKbcM",
-    images: keys("mantra", mantra),
+    images: keys("mantra", mantraOpening),
     sections: [
       {
         heading:
           "Form becomes more honest when it is no longer required to appear refined.",
+        images: keys("mantra", mantraForm),
       },
       {
         heading:
           "The naturally aspirated V8 gives the car its voice. A quad X-pipe exhaust shapes its tone, while the bodywork carries the same grit as the engine at full revs.",
+        images: keys("mantra", mantraEngine),
       },
       {
         heading: "“I’m Batman.” —Batman",
+        images: keys("mantra", mantraProcess),
       },
     ],
   },
@@ -238,7 +257,7 @@ export const projects: Project[] = [
     title: "Nomad",
     subtitle: "Off-road platform — adaptation as structure",
     summary:
-      "Nomad treats the world as the first act of design. The object emerges from its conditions, values and limitations.",
+      "Nomad explores the world as the first act of design. The object emerges from its conditions, values and limitations.",
     tools: ["Vizcom", "ComfyUI", "Plasticity", "Cinema 4D", "Redshift", "Photoshop"],
     hero: "nomad/nomad_HERO.png",
     images: keys("nomad", nomadOpening),

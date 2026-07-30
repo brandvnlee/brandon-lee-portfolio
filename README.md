@@ -263,9 +263,8 @@ it — where a second full-width frame would have been the same picture twice.
 **Consecutive portraits**, which have no choice: at full width a 4:5 plate is
 taller than the viewport twice over. So **keep portraits adjacent in the array** —
 `rowsOf()` in `app/work/[slug]/page.tsx` pairs runs of them. A portrait with no
-partner keeps its whole frame at half the measure, centred, which is the same
-plate as one half of a pair and so does not disturb the rhythm. Below 60rem
-everything is one column at full width.
+partner is cropped to 3:2 and shown full width instead. Below 60rem everything is
+one column and no cropping applies at all.
 
 Either way, both halves of a row are held at **one ratio** with `object-fit: cover`
 so the row is flush top and bottom — left at their own ratios one half overhangs
@@ -284,26 +283,26 @@ case for it and have since been pulled — but reach for it before you crop a fl
 It is the wrong reach for a render. Mantra's clay engine pass was tried this way
 beside the lit bay and came out at half its partner's scale, with the black of the
 render sitting as a visible box on the near-black page. Standing on its own at half
-the measure it holds the same scale as any paired plate and needs no letterboxing.
-
-That plate is also why lone portraits stopped being cropped. Cut to 3:2 across the
-full width it lost the ends of the bay and opened a field of dead black the width of
-the page — the render carries air around the subject, and a crop that keeps the
-width keeps the air with it. The margins were trimmed off the source as well
-(1606x1921 to 1204x1223), so the plate is now tight to the engine.
+the measure was tried next and rejected for the same reason: **every plate meets both
+margins**, and a plate floating in the middle of the page with ground either side is
+the one thing that breaks it. Filling the measure is worth more than the ends of a
+subject, so the lone portrait is cropped. The clay's empty margins were trimmed off
+the source as well (1606x1921 to 1204x1223) so the crop has less air to spend.
 
 ### Where plates sit on the page
 
 By default the plates are **split evenly** across the page — one group before the
 first statement and one after each — so the page alternates between reading and
 looking instead of front-loading a contact sheet and burying the writing under it.
-Mantra and Tenet run this way.
+Tenet runs this way.
 
 Give a section its own `images` and that section is placed **exactly as written**
 instead, with `project.images` becoming the opening run. Nomad does this, because
 its page has an argument to make in order: the object, then the machine, then the
-world it was built for. Naming images on any one section switches the whole project
-to explicit placement, so name them on all of them.
+world it was built for. Mantra does it so that the statement naming the V8 and the
+quad X-pipe opens on the engine bay and the rear the exhaust exits, which an even
+split had put four plates further down. Naming images on any one section switches
+the whole project to explicit placement, so name them on all of them.
 
 ### Absences and additions
 

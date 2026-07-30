@@ -169,7 +169,7 @@ type Plate = { key: string; asset: NonNullable<ReturnType<typeof asset>> };
 /** One plate, or the two the content paired, with whatever the pair asked for. */
 type Entry = { plates: Plate[]; fit?: "contain" };
 
-type Row = Entry & { solo?: boolean };
+type Row = Entry & { crop?: boolean };
 
 /** Resolves content keys to assets, dropping any that no longer exist. */
 function entriesOf(images: ImageEntry[]): Entry[] {
@@ -207,8 +207,8 @@ function entriesOf(images: ImageEntry[]): Entry[] {
  * Two things claim a shared row. A pair declared in the content, which is an
  * editorial decision about how much of the page a set of related views deserves.
  * And consecutive portraits, which have no choice: at full width a 4:5 plate is
- * taller than the viewport twice over. A portrait with no neighbour keeps its
- * whole frame at half the measure instead.
+ * taller than the viewport twice over. A portrait with no neighbour is cropped
+ * to landscape, so that every plate still meets both margins.
  */
 function rowsOf(entries: Entry[]): Row[] {
   const rows: Row[] = [];
@@ -216,7 +216,7 @@ function rowsOf(entries: Entry[]): Row[] {
 
   const flushPortraits = () => {
     while (portraits.length >= 2) rows.push({ plates: portraits.splice(0, 2) });
-    if (portraits.length) rows.push({ plates: portraits.splice(0, 1), solo: true });
+    if (portraits.length) rows.push({ plates: portraits.splice(0, 1), crop: true });
   };
 
   for (const entry of entries) {
@@ -266,9 +266,7 @@ function PlateGroup({ entries, first }: { entries?: Entry[]; first?: boolean }) 
 
         return (
           <div
-            className={`case__row${pair ? " case__row--pair" : ""}${
-              row.solo ? " case__row--solo" : ""
-            }`}
+            className={`case__row${pair ? " case__row--pair" : ""}`}
             key={row.plates[0].key}
             data-fit={row.fit}
             style={
@@ -281,7 +279,8 @@ function PlateGroup({ entries, first }: { entries?: Entry[]; first?: boolean }) 
               <Plate
                 key={plate.key}
                 plate={plate}
-                half={pair || row.solo}
+                pair={pair}
+                crop={row.crop}
                 first={first && rowIndex === 0}
               />
             ))}
@@ -294,18 +293,19 @@ function PlateGroup({ entries, first }: { entries?: Entry[]; first?: boolean }) 
 
 function Plate({
   plate,
-  half,
+  pair,
+  crop,
   first,
 }: {
   plate: Plate;
-  /** Sits in half the measure: one of a pair, or a portrait on its own. */
-  half?: boolean;
+  pair?: boolean;
+  crop?: boolean;
   first?: boolean;
 }) {
   const image = plate.asset;
 
   return (
-    <figure className="case__plate">
+    <figure className="case__plate" data-crop={crop ? "" : undefined}>
       {image.poster ? (
         <FilmPlate
           src={image.src}
@@ -319,7 +319,7 @@ function Plate({
           alt=""
           width={image.width}
           height={image.height}
-          sizes={half ? "(max-width: 60rem) 92vw, 46vw" : "92vw"}
+          sizes={pair ? "(max-width: 60rem) 92vw, 46vw" : "92vw"}
           priority={first}
         />
       )}
