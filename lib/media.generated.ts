@@ -11,7 +11,8 @@ export type MediaAsset = {
 };
 
 export const media: Record<string, MediaAsset> = {
-  "mantra/engine_black.png": { src: "/media/mantra/engine_black.webp", width: 1606, height: 1921 },
+  "mantra/engine_black.png": { src: "/media/mantra/engine_black.webp", width: 1204, height: 1223 },
+  "mantra/enginebay_v2.png": { src: "/media/mantra/enginebay_v2.webp", width: 2400, height: 1340 },
   "mantra/front_sequence_compressed.jpg": { src: "/media/mantra/front_sequence_compressed.webp", width: 1920, height: 1080 },
   "mantra/headlight_sequence.jpg": { src: "/media/mantra/headlight_sequence.webp", width: 1920, height: 1080 },
   "mantra/mantra_face_head_MAGNIFIC.jpg": { src: "/media/mantra/mantra_face_head_MAGNIFIC.webp", width: 1920, height: 1080 },
@@ -21,7 +22,6 @@ export const media: Record<string, MediaAsset> = {
   "mantra/mantra_rear_left_MAGNIFIC.jpg": { src: "/media/mantra/mantra_rear_left_MAGNIFIC.webp", width: 1920, height: 1080 },
   "mantra/mantra_rear_tire_MAGNIFIC.jpg": { src: "/media/mantra/mantra_rear_tire_MAGNIFIC.webp", width: 1920, height: 1080 },
   "mantra/mantra_rear_topangledown_MAGNIFIC.jpg": { src: "/media/mantra/mantra_rear_topangledown_MAGNIFIC.webp", width: 1920, height: 1080 },
-  "mantra/mantra_rear_xpipe_topdown_magnific_cropped.jpg": { src: "/media/mantra/mantra_rear_xpipe_topdown_magnific_cropped.webp", width: 2400, height: 2999 },
   "mantra/mantra_rear_xpipe_topdown_magnific.jpg": { src: "/media/mantra/mantra_rear_xpipe_topdown_magnific.webp", width: 1920, height: 1080 },
   "mantra/mantra_rear3q_MAGNIFIC.jpg": { src: "/media/mantra/mantra_rear3q_MAGNIFIC.webp", width: 1920, height: 1080 },
   "mantra/mantra_sil_intro_EDIT.jpg": { src: "/media/mantra/mantra_sil_intro_EDIT.webp", width: 1920, height: 1080 },

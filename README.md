@@ -263,8 +263,9 @@ it — where a second full-width frame would have been the same picture twice.
 **Consecutive portraits**, which have no choice: at full width a 4:5 plate is
 taller than the viewport twice over. So **keep portraits adjacent in the array** —
 `rowsOf()` in `app/work/[slug]/page.tsx` pairs runs of them. A portrait with no
-partner is cropped to 3:2 and shown full width instead. Below 60rem everything is
-one column and no cropping applies at all.
+partner keeps its whole frame at half the measure, centred, which is the same
+plate as one half of a pair and so does not disturb the rhythm. Below 60rem
+everything is one column at full width.
 
 Either way, both halves of a row are held at **one ratio** with `object-fit: cover`
 so the row is flush top and bottom — left at their own ratios one half overhangs
@@ -279,6 +280,17 @@ its edge and still be the render, but a storyboard loses its notes and a poster
 loses its masthead. On this ground the air around the narrower one reads as mount
 rather than as a gap. Nothing uses it at the moment — Nomad's storyboards were the
 case for it and have since been pulled — but reach for it before you crop a flat.
+
+It is the wrong reach for a render. Mantra's clay engine pass was tried this way
+beside the lit bay and came out at half its partner's scale, with the black of the
+render sitting as a visible box on the near-black page. Standing on its own at half
+the measure it holds the same scale as any paired plate and needs no letterboxing.
+
+That plate is also why lone portraits stopped being cropped. Cut to 3:2 across the
+full width it lost the ends of the bay and opened a field of dead black the width of
+the page — the render carries air around the subject, and a crop that keeps the
+width keeps the air with it. The margins were trimmed off the source as well
+(1606x1921 to 1204x1223), so the plate is now tight to the engine.
 
 ### Where plates sit on the page
 
@@ -338,9 +350,12 @@ that were superseded rather than deleted — `roadster_studio_front_4K_GRAIN_FIX
 which `tenet_front_V2.png` is a cleaner take of, and `roadster_right_sil_MAGNIFIC.jpg`,
 which the aero clip replaced. Add any of them back to the array if you want them.
 
-Two replacements were deleted outright rather than kept, because the new frame is the
-same shot done better and there is no reason to carry both: `jet_roadster_MAGNIFIC_2.jpg`
-(now `tenet_jet_V2.png`) and Nomad's `nomad_world_dusk.png` (now `nomad_world_snow.png`).
+Replacements are deleted outright rather than kept, because the new frame is the same
+shot done better and there is no reason to carry both: `jet_roadster_MAGNIFIC_2.jpg`
+(now `tenet_jet_V2.png`), Nomad's `nomad_world_dusk.png` (now `nomad_world_snow.png`)
+and Mantra's `mantra_rear_xpipe_topdown_magnific_cropped.jpg` (now `enginebay_v2.png`,
+the lit frame of the same bay). The uncropped `mantra_rear_xpipe_topdown_magnific.jpg`
+is still on disk and still unlisted.
 
 ## Content
 

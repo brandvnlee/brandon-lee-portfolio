@@ -846,13 +846,17 @@ ul {
   height: auto;
 }
 
-/* The single concession to cropping: a portrait with no portrait to pair with
-   would be taller than two viewports at full width, so it is cut to 3:2 from
-   the centre. Nothing else on the site loses pixels. */
-.case__plate[data-crop] :is(img, video) {
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
-  object-position: center;
+/* A portrait with no portrait to pair with keeps the whole frame at half the
+   measure, centred. At full width it would stand taller than two viewports; cut
+   to 3:2 instead it lost the ends of the subject and, on a render with air in it,
+   opened a field of dead ground the width of the page. Held to a column it is
+   the same plate as one half of a pair, which is the rhythm the page already has. */
+.case__row--solo {
+  justify-items: center;
+}
+
+.case__row--solo .case__plate {
+  width: 50%;
 }
 
 @media (max-width: 60rem) {
@@ -860,10 +864,11 @@ ul {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* One column already gives a portrait room, so let them keep their full
-     frames — nothing needs cropping to keep a row flush when a row is one
-     image. */
-  .case__plate[data-crop] :is(img, video),
+  /* One column already gives a portrait room. */
+  .case__row--solo .case__plate {
+    width: 100%;
+  }
+
   .case__row--pair :is(img, video) {
     aspect-ratio: auto;
   }

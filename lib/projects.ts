@@ -95,9 +95,12 @@ const mantra: ImageEntry[] = [
   "mantra_rear_tire_MAGNIFIC.jpg",
   "mantra_rear_topangledown_MAGNIFIC.jpg",
   "tailight_sequence_MAGNIFIC.jpg",
-  // The two portraits, kept adjacent so they pair. Both are mechanical
-  // details, so they read as a set rather than as an accident of shape.
-  "mantra_rear_xpipe_topdown_magnific_cropped.jpg",
+  // The same engine bay twice: lit, then as the clay pass. Deliberately not
+  // paired — the clay is the only portrait left on the page, and holding the two
+  // at one ratio either letterboxes it to half the scale of its partner or crops
+  // it hard. Alone it takes the standard 3:2 crop instead, which trims the top
+  // and bottom of the bay and leaves the X-pipe crossing centred and whole.
+  "enginebay_v2.png",
   "engine_black.png",
   "perspective_front_black.jpg",
   "perspective_rear_black.jpg",
