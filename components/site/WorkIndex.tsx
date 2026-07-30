@@ -31,8 +31,8 @@ import { asset, projects } from "@/lib/projects";
  */
 const statement = [
   "Vehicle design, Visualization and",
-  "World Building. Form, function and",
-  "emotion as one system.",
+  "World Building. Translating",
+  "human forces into form.",
 ];
 
 export default function WorkIndex() {

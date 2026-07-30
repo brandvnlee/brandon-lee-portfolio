@@ -248,26 +248,99 @@ odd count. A single column cannot leave a hole. The gap between plates is
 deliberately tight (~1vw): wide gutters between full-width images read as the
 page coming apart, while a hairline of ground reads as a sequence.
 
-Portraits are the exception, since at full width a 4:5 plate is taller than the
-viewport twice over. **Consecutive portraits pair two-up**, both held at 4:5 with
-`object-fit: cover` so the row is flush top and bottom — most of the source
-portraits are already exactly 4:5, so this costs a sliver off the widest one and
-nothing off the rest. Left at their own ratios, one half overhangs the other by
-a few dozen pixels and reads as a mistake.
+Two things claim a shared row.
 
-So **keep portraits adjacent in the `images` array** — `rowsOf()` in
-`app/work/[slug]/page.tsx` pairs runs of them. A portrait with no partner is
-cropped to 3:2 and shown full width instead, which is the only place on the site
-where an image loses pixels. Tenet's lone fender detail is currently the only
-one. Below 60rem everything is one column and no cropping applies at all.
+**A pair written as a tuple.** `["a.png", "b.png"]` in the `images` array puts two
+plates in one row. This is an editorial call, not something ratios can decide:
+Nomad is 16:9 the whole way down, so nothing paired automatically and the page ran
+as sixteen full-width plates — accurate to the work, exhausting to scroll. Pairing
+the views that belong to the same set roughly halves the height of a row and costs
+nothing, since two plates of equal ratio at half width are still their own ratio.
+Reserve full width for the shots that carry the vehicle. Mantra pairs two sets on
+the same reasoning — the two reads of the face, and the wing with the surface under
+it — where a second full-width frame would have been the same picture twice.
 
-`mantra_front3q_VERTICAL.png` is converted but deliberately absent from the
-array: at 1236x2197 it stood several screens tall at any usable width.
+**Consecutive portraits**, which have no choice: at full width a 4:5 plate is
+taller than the viewport twice over. So **keep portraits adjacent in the array** —
+`rowsOf()` in `app/work/[slug]/page.tsx` pairs runs of them. A portrait with no
+partner is cropped to 3:2 and shown full width instead. Below 60rem everything is
+one column and no cropping applies at all.
 
-Excluded by the script: screen grabs, `.mov` files, and scratch work
-(`dinosaur`, `yummers`, `rednblue`, `rb_topdown`). Nomad's `interior_image.png`
-and `reartq.png` are converted but not listed in `projects.ts` — add them to the
-array if you want them.
+Either way, both halves of a row are held at **one ratio** with `object-fit: cover`
+so the row is flush top and bottom — left at their own ratios one half overhangs
+the other by a few dozen pixels and reads as a mistake. The ratio is computed per
+row from the **wider** of the two plates and passed to CSS as `--pair-ratio`, so
+the row is as short as it can be and a matched pair is not cropped at all.
+
+**Print artifacts can letterbox instead.** The third entry form,
+`{ pair: [a, b], fit: "contain" }`, sets `object-fit: contain` on the row. Reach for
+it when pairing two artifacts whose ratios disagree: a render can lose an inch off
+its edge and still be the render, but a storyboard loses its notes and a poster
+loses its masthead. On this ground the air around the narrower one reads as mount
+rather than as a gap. Nothing uses it at the moment — Nomad's storyboards were the
+case for it and have since been pulled — but reach for it before you crop a flat.
+
+### Where plates sit on the page
+
+By default the plates are **split evenly** across the page — one group before the
+first statement and one after each — so the page alternates between reading and
+looking instead of front-loading a contact sheet and burying the writing under it.
+Mantra and Tenet run this way.
+
+Give a section its own `images` and that section is placed **exactly as written**
+instead, with `project.images` becoming the opening run. Nomad does this, because
+its page has an argument to make in order: the object, then the machine, then the
+world it was built for. Naming images on any one section switches the whole project
+to explicit placement, so name them on all of them.
+
+### Absences and additions
+
+`mantra_front3q_VERTICAL.png` is converted but deliberately absent from the array:
+at 1236x2197 it stood several screens tall at any usable width. Nomad's
+`interior_back.png` is absent too — it framed the same cabin as the fisheye from
+closer in, and the wider read is the better one.
+
+The script only walks `public/work/<slug>/`, not below it, so Nomad's
+`worldbuilding/` archive is not converted. The frames chosen from it were copied up
+a level as `nomad_world_*` — which is also how the two poster screenshots and the
+snow frame stopped being camera-roll filenames. Pick more the same way rather than
+pointing the script at the folder: at 1024x576 those frames are pair-only material,
+and converting all thirty would ship twenty unused assets.
+
+### Footage
+
+A `.mov`, `.mp4` or `.m4v` in `public/work/<slug>/` goes through the same pass as a
+still and comes out as an H.264 mp4 plus a WebP poster, capped at 1600px and CRF 26
+with **the audio track dropped**. It needs `ffmpeg-static`, which is a devDependency
+and never ships. Nomad's scope footage lands at 1MB from a 12MB QuickTime master.
+
+Dimensions are read off the **poster**, which is scaled through the same filter as
+the clip, so a `.mov` in the `images` array pairs, crops and lays out exactly like a
+still — `"nomad/nomad_world_recon.mov"` is just another entry.
+
+`components/site/FilmPlate.tsx` renders it: silent, looping, no chrome. It plays on
+JavaScript rather than the `autoplay` attribute, which buys two things. **Reduced
+motion is honoured** — the poster simply stays, and a still of the same shot is a
+fair substitute rather than a degraded one. And playback **follows the viewport** via
+an IntersectionObserver, so a clip at the foot of a long page is not decoding while
+the reader is still at the top of it.
+
+This is separate from `video`, which is a YouTube id for the lead film above the
+plates. Use that for a finished piece with sound, and a film plate for footage that
+belongs in the sequence.
+
+Excluded by the script: screen grabs, screen recordings and scratch work
+(`dinosaur`, `yummers`, `rednblue`, `rb_topdown`).
+
+Converted but not listed in `projects.ts`, so they cost a little deploy weight and
+nothing else: Nomad's `interior_image.png` and `reartq.png`, and two Tenet frames
+that were superseded rather than deleted — `roadster_studio_front_4K_GRAIN_FIX.jpg`,
+which `tenet_front_V2.png` is a cleaner take of, and `roadster_right_sil_MAGNIFIC.jpg`,
+which the aero clip replaced. Add any of them back to the array if you want them.
+
+Two replacements were deleted outright rather than kept, because the new frame is the
+same shot done better and there is no reason to carry both: `jet_roadster_MAGNIFIC_2.jpg`
+(now `tenet_jet_V2.png`) and Nomad's `nomad_world_dusk.png` (now `nomad_world_snow.png`).
 
 ## Content
 

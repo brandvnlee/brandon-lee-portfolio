@@ -719,38 +719,64 @@ ul {
   padding-block: clamp(3.5rem, 8vh, 6rem);
 }
 
+/* Wider than it was: the statement is now set at display-adjacent size, and a
+   44rem column broke it into too many short lines. The note under it is held to
+   its own narrower measure rather than filling this one. */
 .case__measure {
   display: grid;
-  gap: clamp(1rem, 2.5vw, 1.75rem);
+  gap: clamp(1.25rem, 3vw, 2rem);
   padding-inline: var(--margin);
-  max-width: 44rem;
+  max-width: 52rem;
 }
 
-/* Same optical size as the summary, opposite case and opposite tracking. Using
-   case and tracking rather than size to separate two roles at one size is what
-   makes this a system instead of a list of decisions. */
+/* The section head is the masthead pattern repeated: a small label, then a
+   statement in light caps. Deliberately the SAME tokens as `.work__statement`
+   on the landing page rather than similar ones, so the two cannot drift apart.
+   
+   This replaced a 900-weight deck at `--track-head`. Black caps at a small size
+   set into grey bars and read as a UI heading, which fought the light caps used
+   for every other piece of secondary copy on the site. */
 .case__sectionHeading {
-  display: flex;
-  gap: 1rem;
-  font-size: var(--fs-deck);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: var(--track-head);
+  display: grid;
+  justify-items: start;
+  /* The masthead's own label-to-statement gap, not an approximation of it. */
+  gap: clamp(1.5rem, 4vw, 2.75rem);
+  font-size: var(--fs-state);
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: var(--track-caps);
   text-transform: uppercase;
 }
 
+/* Its own line above the statement, at label size — the ordinal is a marker,
+   not part of the sentence, so it should not be set at the sentence's size. */
 .case__sectionOrdinal {
-  opacity: var(--w-faint);
+  font-size: var(--fs-micro);
+  font-weight: 450;
+  line-height: 1;
+  letter-spacing: var(--track-micro);
+  opacity: var(--w-quiet);
 }
 
-/* Leading goes UP on a dark ground, not down: at this size white lines bind to
-   each other vertically the way glyphs bind horizontally. */
+.case__sectionStatement {
+  display: block;
+  /* Matches the optical left edge of the display type above it. */
+  margin-left: -0.012em;
+}
+
+/* The label face from the landing page. Leading is opened well past the 1.0 the
+   `.micro` label uses, because that value is for a single line and would bind
+   consecutive lines of capitals together in a paragraph. The measure is held
+   tight for the same reason: at this size a 44rem column runs past 100
+   characters a line. */
 .case__body {
-  font-size: var(--fs-body);
-  font-weight: 440;
-  line-height: 1.5;
-  letter-spacing: var(--track-body);
-  max-width: 36rem;
+  font-size: var(--fs-micro);
+  font-weight: 450;
+  line-height: 1.75;
+  letter-spacing: var(--track-micro);
+  text-transform: uppercase;
+  opacity: var(--w-quiet);
+  max-width: 30rem;
   text-wrap: pretty;
 }
 
@@ -783,26 +809,38 @@ ul {
   gap: clamp(0.75rem, 1.6vw, 1.25rem);
 }
 
-/* Portraits pair up to fill a row. Both halves are held at 4:5 so the row is
-   flush top and bottom — the source portraits sit between 0.80 and 0.84, and
-   left at their own ratios one side of the pair overhangs the other by a few
-   dozen pixels, which reads as a mistake. 4:5 is the ratio most of them already
-   are, so this costs a sliver off the widest one and nothing off the rest. */
+/* Two plates to a row: portraits, which pair on ratio, and sets the content
+   paired by hand to keep a page of 16:9 renders from running on forever.
+
+   Both halves are held at one ratio so the row is flush top and bottom — left at
+   their own ratios one side overhangs the other by a few dozen pixels, which
+   reads as a mistake. The ratio is set per row by the markup, from the wider of
+   the two plates, so a matched pair is not cropped at all. */
 .case__row--pair {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.case__row--pair img {
-  aspect-ratio: 4 / 5;
+.case__row--pair :is(img, video) {
+  aspect-ratio: var(--pair-ratio, 4 / 5);
   object-fit: cover;
   object-position: center;
+}
+
+/* Print artifacts — posters, boards, design sheets — are letterboxed into the row
+   rather than filled to it. A render can lose an inch off its edge and still be
+   the render; a board loses its notes and a poster loses its masthead. On this
+   ground the air around them reads as mount, not as a gap. */
+.case__row[data-fit="contain"] :is(img, video) {
+  object-fit: contain;
 }
 
 .case__plate {
   width: 100%;
 }
 
-.case__plate img {
+/* Footage lays out as a plate and nothing more: same width, same block, no
+   chrome. The element differs, the frame does not. */
+.case__plate :is(img, video) {
   display: block;
   width: 100%;
   height: auto;
@@ -811,7 +849,7 @@ ul {
 /* The single concession to cropping: a portrait with no portrait to pair with
    would be taller than two viewports at full width, so it is cut to 3:2 from
    the centre. Nothing else on the site loses pixels. */
-.case__plate[data-crop] img {
+.case__plate[data-crop] :is(img, video) {
   aspect-ratio: 3 / 2;
   object-fit: cover;
   object-position: center;
@@ -825,8 +863,8 @@ ul {
   /* One column already gives a portrait room, so let them keep their full
      frames — nothing needs cropping to keep a row flush when a row is one
      image. */
-  .case__plate[data-crop] img,
-  .case__row--pair img {
+  .case__plate[data-crop] :is(img, video),
+  .case__row--pair :is(img, video) {
     aspect-ratio: auto;
   }
 }

@@ -2,9 +2,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import SplitText from "@/components/type/SplitText";
+import FilmPlate from "@/components/site/FilmPlate";
 import Footer from "@/components/site/Footer";
 import { asset, bySlug, projects, creditsOf } from "@/lib/projects";
+import type { ImageEntry } from "@/lib/projects";
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
@@ -57,11 +60,15 @@ export default async function ProjectPage({
   const index = projects.findIndex((p) => p.slug === project.slug);
   const next = projects[(index + 1) % projects.length];
 
-  const plates = project.images
-    .map((key) => ({ key, asset: asset(key) }))
-    .filter((plate) => plate.asset !== null);
-
-  const groups = chunk(plates, project.sections.length + 1);
+  // Sections that name their own plates are placed exactly as written. Where none
+  // do, the project's plates are split evenly across the page instead.
+  const placed = project.sections.some((section) => section.images);
+  const groups = placed
+    ? [
+        entriesOf(project.images),
+        ...project.sections.map((section) => entriesOf(section.images ?? [])),
+      ]
+    : chunk(entriesOf(project.images), project.sections.length + 1);
   const credits = creditsOf(project);
 
   return (
@@ -106,7 +113,7 @@ export default async function ProjectPage({
         </figure>
       ) : null}
 
-      <PlateGroup plates={groups[0]} first />
+      <PlateGroup entries={groups[0]} first />
 
       {project.sections.map((section, i) => (
         <div key={section.heading}>
@@ -115,20 +122,30 @@ export default async function ProjectPage({
             <div className="case__measure">
               <h2 className="case__sectionHeading">
                 <span className="case__sectionOrdinal" aria-hidden="true">
-                  {pad(i + 1)}
+                  _{i + 1}
                 </span>
-                <span>{section.heading}</span>
+                {/* Scrubbed against scroll, word by word. These statements ARE
+                    the section now, so the reveal that used to belong to the
+                    body copy below them belongs to them instead. */}
+                <SplitText
+                  as="span"
+                  className="case__sectionStatement"
+                  variant="illuminate"
+                  text={section.heading}
+                />
               </h2>
-              <SplitText
-                as="p"
-                className="case__body"
-                variant="illuminate"
-                text={section.body}
-              />
+              {section.body ? (
+                <SplitText
+                  as="p"
+                  className="case__body"
+                  variant="illuminate"
+                  text={section.body}
+                />
+              ) : null}
             </div>
           </section>
 
-          <PlateGroup plates={groups[i + 1]} />
+          <PlateGroup entries={groups[i + 1]} />
         </div>
       ))}
 
@@ -147,25 +164,53 @@ export default async function ProjectPage({
   );
 }
 
-type Plate = { key: string; asset: ReturnType<typeof asset> };
+type Plate = { key: string; asset: NonNullable<ReturnType<typeof asset>> };
 
-type Row = { plates: Plate[]; crop?: boolean };
+/** One plate, or the two the content paired, with whatever the pair asked for. */
+type Entry = { plates: Plate[]; fit?: "contain" };
+
+type Row = Entry & { crop?: boolean };
+
+/** Resolves content keys to assets, dropping any that no longer exist. */
+function entriesOf(images: ImageEntry[]): Entry[] {
+  return images
+    .map((entry) => {
+      const keys =
+        typeof entry === "string"
+          ? [entry]
+          : Array.isArray(entry)
+            ? entry
+            : entry.pair;
+
+      return {
+        plates: keys
+          .map((key) => ({ key, asset: asset(key) }))
+          .filter((plate): plate is Plate => plate.asset !== null),
+        fit:
+          typeof entry === "string" || Array.isArray(entry)
+            ? undefined
+            : entry.fit,
+      };
+    })
+    .filter((entry) => entry.plates.length > 0);
+}
 
 /**
- * Renders are shown at the full width of the measure, one per row.
+ * Renders are shown at the full width of the measure, one per row, unless
+ * something asks otherwise.
  *
- * The previous two-up grid halved every image and, because the renders are a
- * mix of 16:9 and 4:5, left ragged rows and an empty cell wherever a group had
- * an odd count. A single column cannot leave a hole and gives each render the
- * size it deserves.
+ * An earlier two-up grid halved every image indiscriminately and, because the
+ * renders are a mix of 16:9 and 4:5, left ragged rows and an empty cell wherever
+ * a group had an odd count. Rows are built rather than tiled, so a hole is not
+ * possible and full width stays the default.
  *
- * Portraits are the exception: at full width a 4:5 plate is taller than the
- * viewport twice over. Consecutive portraits are paired instead — they share a
- * ratio, so the two halves are the same height and the row still fills. A
- * portrait with no neighbour to pair with is cropped to landscape, which is the
- * only place in the layout where an image loses anything.
+ * Two things claim a shared row. A pair declared in the content, which is an
+ * editorial decision about how much of the page a set of related views deserves.
+ * And consecutive portraits, which have no choice: at full width a 4:5 plate is
+ * taller than the viewport twice over. A portrait with no neighbour is cropped
+ * to landscape.
  */
-function rowsOf(plates: Plate[]): Row[] {
+function rowsOf(entries: Entry[]): Row[] {
   const rows: Row[] = [];
   let portraits: Plate[] = [];
 
@@ -174,9 +219,14 @@ function rowsOf(plates: Plate[]): Row[] {
     if (portraits.length) rows.push({ plates: portraits.splice(0, 1), crop: true });
   };
 
-  for (const plate of plates) {
-    if (!plate.asset) continue;
+  for (const entry of entries) {
+    if (entry.plates.length > 1) {
+      flushPortraits();
+      rows.push(entry);
+      continue;
+    }
 
+    const [plate] = entry.plates;
     if (plate.asset.height > plate.asset.width) {
       portraits.push(plate);
       continue;
@@ -191,14 +241,23 @@ function rowsOf(plates: Plate[]): Row[] {
 }
 
 /**
+ * A paired row holds both halves at one ratio so it sits flush top and bottom.
+ * The wider of the two wins: the row comes out as short as it can be, and the
+ * cost is a sliver off the top and bottom of the taller image. A matched pair —
+ * Nomad is 16:9 throughout — loses nothing at all.
+ */
+const pairRatio = (plates: Plate[]) =>
+  Math.max(...plates.map((p) => p.asset.width / p.asset.height)).toFixed(4);
+
+/**
  * No rules and no captions between plates — the plate edges are the rules, and
  * ruling between images is the fastest way to make an image grid look like a
  * CMS.
  */
-function PlateGroup({ plates, first }: { plates?: Plate[]; first?: boolean }) {
-  if (!plates?.length) return null;
+function PlateGroup({ entries, first }: { entries?: Entry[]; first?: boolean }) {
+  if (!entries?.length) return null;
 
-  const rows = rowsOf(plates);
+  const rows = rowsOf(entries);
 
   return (
     <div className="case__plates">
@@ -209,6 +268,12 @@ function PlateGroup({ plates, first }: { plates?: Plate[]; first?: boolean }) {
           <div
             className={`case__row${pair ? " case__row--pair" : ""}`}
             key={row.plates[0].key}
+            data-fit={row.fit}
+            style={
+              pair
+                ? ({ "--pair-ratio": pairRatio(row.plates) } as CSSProperties)
+                : undefined
+            }
           >
             {row.plates.map((plate) => (
               <Plate
@@ -238,18 +303,26 @@ function Plate({
   first?: boolean;
 }) {
   const image = plate.asset;
-  if (!image) return null;
 
   return (
     <figure className="case__plate" data-crop={crop ? "" : undefined}>
-      <Image
-        src={image.src}
-        alt=""
-        width={image.width}
-        height={image.height}
-        sizes={pair ? "(max-width: 60rem) 92vw, 46vw" : "92vw"}
-        priority={first}
-      />
+      {image.poster ? (
+        <FilmPlate
+          src={image.src}
+          poster={image.poster}
+          width={image.width}
+          height={image.height}
+        />
+      ) : (
+        <Image
+          src={image.src}
+          alt=""
+          width={image.width}
+          height={image.height}
+          sizes={pair ? "(max-width: 60rem) 92vw, 46vw" : "92vw"}
+          priority={first}
+        />
+      )}
     </figure>
   );
 }

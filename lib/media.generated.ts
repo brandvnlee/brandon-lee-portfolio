@@ -2,7 +2,13 @@
 // Keys are "<slug>/<original filename>" so content files can keep referring to
 // the source renders while the served asset stays an optimised WebP.
 
-export type MediaAsset = { src: string; width: number; height: number };
+export type MediaAsset = {
+  src: string;
+  width: number;
+  height: number;
+  /** Present only on footage: the still held until the clip plays. */
+  poster?: string;
+};
 
 export const media: Record<string, MediaAsset> = {
   "mantra/engine_black.png": { src: "/media/mantra/engine_black.webp", width: 1606, height: 1921 },
@@ -11,7 +17,6 @@ export const media: Record<string, MediaAsset> = {
   "mantra/mantra_face_head_MAGNIFIC.jpg": { src: "/media/mantra/mantra_face_head_MAGNIFIC.webp", width: 1920, height: 1080 },
   "mantra/mantra_face_tiltdown_MAGNIFIC_2.jpg": { src: "/media/mantra/mantra_face_tiltdown_MAGNIFIC_2.webp", width: 1920, height: 1080 },
   "mantra/mantra_front3q_MAGNIFIC.jpg": { src: "/media/mantra/mantra_front3q_MAGNIFIC.webp", width: 1920, height: 1080 },
-  "mantra/mantra_front3q_VERTICAL.png": { src: "/media/mantra/mantra_front3q_VERTICAL.webp", width: 1236, height: 2197 },
   "mantra/mantra_leftside_MAGNIFIC.jpg": { src: "/media/mantra/mantra_leftside_MAGNIFIC.webp", width: 1920, height: 1080 },
   "mantra/mantra_rear_left_MAGNIFIC.jpg": { src: "/media/mantra/mantra_rear_left_MAGNIFIC.webp", width: 1920, height: 1080 },
   "mantra/mantra_rear_tire_MAGNIFIC.jpg": { src: "/media/mantra/mantra_rear_tire_MAGNIFIC.webp", width: 1920, height: 1080 },
@@ -34,16 +39,27 @@ export const media: Record<string, MediaAsset> = {
   "nomad/nomad_interior_fisheye.png": { src: "/media/nomad/nomad_interior_fisheye.webp", width: 2400, height: 1350 },
   "nomad/nomad_interior_side.png": { src: "/media/nomad/nomad_interior_side.webp", width: 2400, height: 1350 },
   "nomad/nomad_low_reartq.png": { src: "/media/nomad/nomad_low_reartq.webp", width: 2400, height: 1350 },
+  "nomad/nomad_poster_red.png": { src: "/media/nomad/nomad_poster_red.webp", width: 1327, height: 1966 },
+  "nomad/nomad_poster_wireframe.png": { src: "/media/nomad/nomad_poster_wireframe.webp", width: 1328, height: 1961 },
   "nomad/nomad_rollcage_birdeye.png": { src: "/media/nomad/nomad_rollcage_birdeye.webp", width: 2400, height: 1350 },
   "nomad/nomad_rollcage_engine_tq.png": { src: "/media/nomad/nomad_rollcage_engine_tq.webp", width: 2400, height: 1350 },
   "nomad/nomad_rollcage_fronttq.png": { src: "/media/nomad/nomad_rollcage_fronttq.webp", width: 2400, height: 1350 },
   "nomad/nomad_rollcage_lowertq.png": { src: "/media/nomad/nomad_rollcage_lowertq.webp", width: 2400, height: 1350 },
   "nomad/nomad_topstraight_rear.png": { src: "/media/nomad/nomad_topstraight_rear.webp", width: 2400, height: 1350 },
   "nomad/nomad_topstraight_side.png": { src: "/media/nomad/nomad_topstraight_side.webp", width: 2400, height: 1350 },
+  "nomad/nomad_world_approach.png": { src: "/media/nomad/nomad_world_approach.webp", width: 1024, height: 576 },
+  "nomad/nomad_world_bow.png": { src: "/media/nomad/nomad_world_bow.webp", width: 1024, height: 576 },
+  "nomad/nomad_world_fog.png": { src: "/media/nomad/nomad_world_fog.webp", width: 1024, height: 576 },
+  "nomad/nomad_world_headlights.png": { src: "/media/nomad/nomad_world_headlights.webp", width: 1024, height: 576 },
+  "nomad/nomad_world_patrol.png": { src: "/media/nomad/nomad_world_patrol.webp", width: 1024, height: 576 },
+  "nomad/nomad_world_recon.mov": { src: "/media/nomad/nomad_world_recon.mp4", width: 1600, height: 900, poster: "/media/nomad/nomad_world_recon.webp" },
+  "nomad/nomad_world_scope.png": { src: "/media/nomad/nomad_world_scope.webp", width: 1024, height: 576 },
+  "nomad/nomad_world_ships.png": { src: "/media/nomad/nomad_world_ships.webp", width: 1024, height: 576 },
+  "nomad/nomad_world_snow.png": { src: "/media/nomad/nomad_world_snow.webp", width: 2400, height: 1018 },
+  "nomad/nomad_world_wreck.png": { src: "/media/nomad/nomad_world_wreck.webp", width: 1024, height: 576 },
   "nomad/reartq.png": { src: "/media/nomad/reartq.webp", width: 2400, height: 3000 },
   "nomad/wf_closeup.png": { src: "/media/nomad/wf_closeup.webp", width: 2400, height: 3000 },
   "nomad/wireframe_td.png": { src: "/media/nomad/wireframe_td.webp", width: 2400, height: 3000 },
-  "tenet/jet_roadster_MAGNIFIC_2.jpg": { src: "/media/tenet/jet_roadster_MAGNIFIC_2.webp", width: 1920, height: 1080 },
   "tenet/roadster_left_front_dead_MAGNIFIC.jpg": { src: "/media/tenet/roadster_left_front_dead_MAGNIFIC.webp", width: 1920, height: 1080 },
   "tenet/roadster_left_front_face_MAGNIFIC.jpg": { src: "/media/tenet/roadster_left_front_face_MAGNIFIC.webp", width: 1920, height: 1080 },
   "tenet/roadster_left_sidescoop_MAGNIFIC.jpg": { src: "/media/tenet/roadster_left_sidescoop_MAGNIFIC.webp", width: 1920, height: 1080 },
@@ -57,4 +73,7 @@ export const media: Record<string, MediaAsset> = {
   "tenet/roadster_studio_side_MAGNIFIC.jpg": { src: "/media/tenet/roadster_studio_side_MAGNIFIC.webp", width: 1920, height: 1080 },
   "tenet/roadster_studio_wing_MAGNIFIC.jpg": { src: "/media/tenet/roadster_studio_wing_MAGNIFIC.webp", width: 1920, height: 1080 },
   "tenet/teal_bg_take2_MAGNIFIC.jpg": { src: "/media/tenet/teal_bg_take2_MAGNIFIC.webp", width: 1920, height: 1080 },
+  "tenet/tenet_aero.mp4": { src: "/media/tenet/tenet_aero.mp4", width: 1600, height: 900, poster: "/media/tenet/tenet_aero.webp" },
+  "tenet/tenet_front_V2.png": { src: "/media/tenet/tenet_front_V2.webp", width: 2400, height: 1340 },
+  "tenet/tenet_jet_V2.png": { src: "/media/tenet/tenet_jet_V2.webp", width: 2400, height: 1340 },
 };
