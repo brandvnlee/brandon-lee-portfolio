@@ -370,6 +370,18 @@ and was renamed `tenet_reartq_spot.png` on the way in.
 The subfolder is not walked by `prepare-media.mjs`, so anything left sitting in
 `tenet_v2/` is simply not part of the site. Empty it as you go.
 
+Nomad's thirteen vehicle renders were then re-done the same way, arriving in
+`nomad_v2/` under working names (`topdwon.png`, `sed_ddark.png`) and matched one to
+one against the frames they replace — the whole vehicle set, leaving the world
+stills, wireframes, posters and the recon clip untouched. These were **moved onto
+the existing filenames** rather than given new ones, which is the better path now
+that outputs are stamped: `projects.ts` needs no edit, the running order and every
+hand-made pair are preserved by construction, and the established names stay
+descriptive where the working names were not. All thirteen came back at the same
+2400x1340, so the pairs are still flush. Match by eye before overwriting — the new
+`reartq.png` is Nomad's `nomad_low_reartq.png`, not the unrelated `reartq.png`
+already sitting in the folder.
+
 Replacements are deleted outright rather than kept, because the new frame is the same
 shot done better and there is no reason to carry both: `jet_roadster_MAGNIFIC_2.jpg`
 (now `tenet_jet_V2.png`), Nomad's `nomad_world_dusk.png` (now `nomad_world_snow.png`)
