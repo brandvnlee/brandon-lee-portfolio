@@ -319,7 +319,11 @@ function Plate({
           alt=""
           width={image.width}
           height={image.height}
-          sizes={pair ? "(max-width: 60rem) 92vw, 46vw" : "92vw"}
+          /* A paired plate is half the measure at every width now, so it asks
+             for half the measure at every width. It used to request 92vw below
+             60rem, which had phones downloading a full-width render to show it
+             at half width. */
+          sizes={pair ? "46vw" : "92vw"}
           priority={first}
         />
       )}

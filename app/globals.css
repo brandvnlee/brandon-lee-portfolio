@@ -153,6 +153,32 @@
   :root {
     --cols: 6;
     --reg-a: calc(var(--margin) + var(--col) + (0.5 * var(--gap)));
+
+    /* ------------------------------------------------------------------------
+       PHONE TEXT TIERS
+
+       The scale was drawn for a desktop measure and hit its floors well before
+       a phone: the statement tier held 24px and the deck 21px at 375px, which
+       is display sizing applied to secondary copy. Set in capitals on a column
+       four inches wide, they read as a second set of headlines competing with
+       the titles.
+
+       The display tiers are untouched. The index titles are fitted to their
+       own container and never consulted these tokens; the case title and the
+       next-project title are the drama on the page and should stay loud.
+
+       Each tier keeps a fluid middle that meets the desktop value exactly at
+       48rem, so nothing steps at the breakpoint — only the bottom of the range
+       moves.
+       ------------------------------------------------------------------------ */
+
+    /* Floor only: the existing slope already lands near 18px at 375px, it was
+       simply never allowed to get there. */
+    --fs-state: clamp(1.125rem, 2.6vw + 0.5rem, 3.25rem);
+    --fs-deck: clamp(1rem, 1.66vw + 0.61rem, 1.875rem);
+    /* The one fixed tier, and the most used — labels, ordinals, credits and
+       the section notes are all set in it. */
+    --fs-micro: 0.66rem;
   }
 }
 
@@ -256,9 +282,13 @@ ul {
   white-space: nowrap;
 }
 
+/* No will-change. The flicker is a sequence of opacity SETS, not a tween —
+   there is nothing to interpolate and so nothing for a compositor layer to
+   accelerate, and it was promoting every character on the page: 126 layers on a
+   case study, held for the life of the page, for an animation that lasts under
+   a second. */
 [data-split="enter"] .char {
   opacity: 0;
-  will-change: opacity;
 }
 
 /* 0.24, not the 0.16 this was on paper: at 16% white on this ground the copy
@@ -860,16 +890,21 @@ ul {
   object-position: center;
 }
 
-@media (max-width: 60rem) {
-  .case__row--pair {
-    grid-template-columns: minmax(0, 1fr);
-  }
+/* A pair stays a pair at every width. It used to break into one column below
+   60rem, which is where the reasoning went wrong: pairing is an editorial
+   decision about how much of the page a set of views deserves, and stacking
+   them undoes that decision — the two frames stop answering each other and the
+   page grows by the height of a plate for every pair on it.
 
-  /* One column already gives a portrait room, so let them keep their full
-     frames — nothing needs cropping to keep a row flush when a row is one
-     image. */
-  .case__plate[data-crop] :is(img, video),
-  .case__row--pair :is(img, video) {
+   Narrow is exactly where the pairs earn their place. Two 16:9 plates at half a
+   phone's width are small, but they are a set, and the alternative is a phone
+   page twice as long. */
+
+@media (max-width: 60rem) {
+  /* A lone portrait is the one plate that does change. In one column it has the
+     room to keep its whole frame, so it gives up the 3:2 crop that stops it
+     being taller than the screen on a wide layout. */
+  .case__plate[data-crop] :is(img, video) {
     aspect-ratio: auto;
   }
 }

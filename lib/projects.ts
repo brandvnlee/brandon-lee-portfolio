@@ -232,7 +232,7 @@ export const projects: Project[] = [
     title: "Mantra",
     subtitle: "Halo vehicle — aggression as form",
     summary:
-      "Mantra preserves intensity in mechanical form. Sound, heat and tension become the remains of an era, conceived as a relic for the future.",
+      "Mantra preserves intensity in mechanical form. Sound, heat and pressure become the remains of an era, conceived as a relic for the future.",
     tools: [
       "Cinema 4D",
       "Houdini FX",

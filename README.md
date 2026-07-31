@@ -60,6 +60,20 @@ visibly to the right of the 11px label above it. The correction is in `em`, so
 it scales with the fitted size; the label tiers get nothing, because the point
 is that the big type comes back to meet the small type.
 
+**Below 48rem the text tiers drop and the display tiers do not.** The scale was
+drawn for a desktop measure and hit its floors long before a phone: the statement
+tier held 24px and the deck 21px at 375px, which is display sizing applied to
+secondary copy — set in capitals on a column four inches wide they read as a
+second set of headlines competing with the titles. `--fs-state`, `--fs-deck` and
+`--fs-micro` get lower floors there. Each keeps a fluid middle that meets its
+desktop value exactly at 48rem, so nothing steps at the breakpoint; only the
+bottom of the range moves.
+
+The titles are untouched on purpose. The index titles are fitted to their own
+container and never consulted these tokens, and the case and next-project titles
+are the drama on the page. If a text tier ever needs to go lower, move the floor,
+not the slope.
+
 ## Type motion
 
 Two behaviours, and only two. Both are driven by one controller
@@ -106,6 +120,11 @@ Two things worth knowing before you tune any of it:
   leftover offset, and leaves the type invisible while reporting the tween
   complete. Always state both axes: `fromTo(el, { yPercent: 45, y: 0 }, {
   yPercent: 0, y: 0 })`.
+- **Do not put `will-change` on `.char`.** It was there and has been removed. The
+  flicker is a sequence of opacity `set()`s, so there is nothing to interpolate
+  and nothing for a compositor layer to accelerate — it was promoting every
+  character on the page (126 layers on a case study), held for the life of the
+  page, for an animation lasting under a second.
 
 `illuminate` only works on blocks that genuinely scroll through the viewport.
 Anything above the fold has already finished its scrub on arrival, which is why
@@ -271,8 +290,16 @@ it — where a second full-width frame would have been the same picture twice.
 **Consecutive portraits**, which have no choice: at full width a 4:5 plate is
 taller than the viewport twice over. So **keep portraits adjacent in the array** —
 `rowsOf()` in `app/work/[slug]/page.tsx` pairs runs of them. A portrait with no
-partner is cropped to 3:2 and shown full width instead. Below 60rem everything is
-one column and no cropping applies at all.
+partner is cropped to 3:2 and shown full width instead, except below 60rem, where
+one column gives it the room to keep its whole frame.
+
+**A pair stays a pair at every width.** It used to break into one column below
+60rem, which had the reasoning backwards: pairing is a decision about how much of
+the page a set of views deserves, and stacking undoes it — the two frames stop
+answering each other and the page grows by a plate's height for every pair on it.
+Narrow is where pairs earn their place. The cost is that two 16:9 plates on a
+390px phone come out about 169x94 each; if that reads as too small, stack
+landscape pairs below ~30rem rather than reinstating the old 60rem rule.
 
 Either way, both halves of a row are held at **one ratio** with `object-fit: cover`
 so the row is flush top and bottom — left at their own ratios one half overhangs
@@ -435,6 +462,21 @@ the same weight as every other label. A "Work" link was removed; pointing at the
 index from the index is not navigation. Nothing on the page competes with the
 work.
 
+### The mark
+
+A pure red disc on nothing, and `app/icon.svg` is the source of truth for it — 32
+unit box, `r="15"`, `#ff0000`. `app/favicon.ico` (16/32/48/256, transparent) and
+`app/apple-icon.png` (180px, on `--ink`, because iOS flattens transparency onto
+white) are raster copies of that same geometry, generated with sharp when the
+shape changes. The apple icon gets the site's own ground rather than transparency;
+everything else keeps it, so the disc sits on a light or dark tab bar equally.
+
+If you regenerate them: rasterise the SVG **without** a sharp `density` override.
+The SVG carries explicit pixel width and height, and density scales those instead
+of honouring them — it quietly turned the 48px frame into a 256px one and the
+180px apple icon into 960px, so the directory inside the ICO described sizes the
+file did not contain.
+
 ### Contact
 
 `components/site/ContactLink.tsx`, used by the header, the footer, and the
@@ -518,6 +560,32 @@ page part way down. `SmoothScroll` also resets Lenis and the document together
 on navigation, because Lenis keeps its own position and would otherwise restore
 it on the next frame. That reset is skipped when there is a hash, so `/#work`
 still lands on the index.
+
+### Every page opens at the top
+
+`history.scrollRestoration` is set to `"manual"`, and this is the reason a page
+you had already visited used to open part way down it, then lurch. The browser
+restores the scroll position of a history entry itself, a frame or two after the
+entry becomes current — which is after `SmoothScroll` has put the page at the
+top, making the browser the last writer. It also moves the document without
+telling Lenis, so Lenis still believed it was at the top and the next touch of
+the wheel snapped the page back up. One cause, both symptoms.
+
+It is written **on every render, not once on mount**, because the mode belongs to
+the session history *entry* rather than to the document: each navigation starts a
+new entry at the browser default, so an entry has to be marked while it is
+current or it will restore when it is returned to. Setting it once looks like it
+works and then fails on exactly the journey that was reported — out, back, and
+in again.
+
+The reset itself runs twice, once on the route change and once on the next frame.
+A case page is mostly images, so its height is still settling as they resolve,
+and a height change while the document is scrolled takes the scroll with it.
+
+Note that `history.scrollRestoration` can still *read* `"auto"` inside Cursor's
+embedded browser even when the write has plainly taken effect. Trust the
+behaviour — navigate out, scroll, come back, and check `window.scrollY` — rather
+than the getter.
 
 ### Jumping to the top from elsewhere
 
