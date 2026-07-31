@@ -69,7 +69,7 @@ export const media: Record<string, MediaAsset> = {
   "tenet/tenet_fronttq_dark.png": { src: "/media/tenet/tenet_fronttq_dark.c8003e47.webp", width: 2400, height: 1340 },
   "tenet/tenet_jet_V2.png": { src: "/media/tenet/tenet_jet_V2.e9e03edd.webp", width: 2400, height: 1340 },
   "tenet/tenet_reartq_spot.png": { src: "/media/tenet/tenet_reartq_spot.47d6558c.webp", width: 2400, height: 1340 },
-  "tenet/tenet_reartq.png": { src: "/media/tenet/tenet_reartq.bca5c3ec.webp", width: 2400, height: 1340 },
+  "tenet/tenet_reartq.png": { src: "/media/tenet/tenet_reartq.e1c585d5.webp", width: 2400, height: 1340 },
   "tenet/tenet_side_dark.png": { src: "/media/tenet/tenet_side_dark.e834e3fb.webp", width: 2400, height: 1340 },
   "tenet/tenet_side_hero.png": { src: "/media/tenet/tenet_side_hero.5b0dcf60.webp", width: 2400, height: 1340 },
   "tenet/tenet_tailamp.png": { src: "/media/tenet/tenet_tailamp.1807a955.webp", width: 2400, height: 1340 },
