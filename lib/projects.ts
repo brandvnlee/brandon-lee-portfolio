@@ -77,8 +77,8 @@ export type Project = {
  * a 4:5 plate stands taller than the viewport — so keep portraits adjacent. A
  * portrait with no neighbour gets cropped to landscape instead.
  *
- * `mantra_front3q_VERTICAL.png` is deliberately absent: at 1236x2197 it stood
- * several screens tall at any usable width.
+ * `mantra_front3q_VERTICAL.png` was deleted rather than listed: at 1236x2197 it
+ * stood several screens tall at any usable width.
  *
  * Mantra is placed section by section rather than split evenly, so the engine
  * plates sit under the statement about the engine.
@@ -86,22 +86,24 @@ export type Project = {
 
 /** The opening run: the silhouette, the hero, and the face it leads with. */
 const mantraOpening: ImageEntry[] = [
-  "mantra_sil_intro_EDIT.jpg",
-  "mantra_front3q_MAGNIFIC.jpg",
+  "mantra_sil_intro_EDIT.png",
+  "mantra_front3q_MAGNIFIC.png",
   // Two reads of the same face, dead-on and from above. They answer each other,
   // so they share a row rather than repeating the frame twice at full width.
-  ["mantra_face_head_MAGNIFIC.jpg", "mantra_face_tiltdown_MAGNIFIC_2.jpg"],
-  "headlight_sequence.jpg",
+  ["mantra_face_head_MAGNIFIC.png", "mantra_face_tiltdown_MAGNIFIC_2.png"],
+  "headlight_sequence.png",
 ];
 
 /** _1 — the form itself, read front to rear. */
 const mantraForm: ImageEntry[] = [
-  "mantra_leftside_MAGNIFIC.jpg",
-  // The wing and the surface under it — one set, one row.
-  ["winglets_magnific.jpg", "front_sequence_compressed.jpg"],
-  "mantra_rear3q_MAGNIFIC.jpg",
-  "mantra_rear_left_MAGNIFIC.jpg",
-  "mantra_rear_tire_MAGNIFIC.jpg",
+  "mantra_leftside_MAGNIFIC.png",
+  // The wing and the surface under it — one set, one row. The wing is the one
+  // frame here still on the old upscale, so the row takes the re-render's ratio
+  // and trims a per cent off the wing rather than standing ragged.
+  ["winglets_magnific.jpg", "front_sequence_compressed.png"],
+  "mantra_rear3q_MAGNIFIC.png",
+  "mantra_rear_left_MAGNIFIC.png",
+  "mantra_rear_tire_MAGNIFIC.png",
 ];
 
 /**
@@ -240,7 +242,7 @@ export const projects: Project[] = [
       "DaVinci Resolve",
       "Ableton",
     ],
-    hero: "mantra/mantra_front3q_MAGNIFIC.jpg",
+    hero: "mantra/mantra_front3q_MAGNIFIC.png",
     video: "3FTGU0MKbcM",
     images: keys("mantra", mantraOpening),
     sections: [

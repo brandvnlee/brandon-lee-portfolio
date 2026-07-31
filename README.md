@@ -314,10 +314,10 @@ the whole project to explicit placement, so name them on all of them.
 
 ### Absences and additions
 
-`mantra_front3q_VERTICAL.png` is converted but deliberately absent from the array:
+`mantra_front3q_VERTICAL.png` was deleted rather than merely left out of the array:
 at 1236x2197 it stood several screens tall at any usable width. Nomad's
-`interior_back.png` is absent too — it framed the same cabin as the fisheye from
-closer in, and the wider read is the better one.
+`interior_back.png` is still on disk but absent from its array — it framed the same
+cabin as the fisheye from closer in, and the wider read is the better one.
 
 The script only walks `public/work/<slug>/`, not below it, so Nomad's
 `worldbuilding/` archive is not converted. The frames chosen from it were copied up
@@ -381,6 +381,16 @@ descriptive where the working names were not. All thirteen came back at the same
 2400x1340, so the pairs are still flush. Match by eye before overwriting — the new
 `reartq.png` is Nomad's `nomad_low_reartq.png`, not the unrelated `reartq.png`
 already sitting in the folder.
+
+Ten of Mantra's frames came back the same way, from `mantra_v2/`. These are native
+5504x3072 renders replacing 1920x1080 Magnific upscales, so the whole opening and
+most of `_1` gains real resolution rather than an interpolated one. They keep their
+established base names but arrive as PNG, so the extension changes in `projects.ts`
+and the `_MAGNIFIC` suffixes now record where a frame came from rather than what it
+is. `winglets_magnific.jpg` is the one frame in a pair that was not re-rendered:
+the re-renders are 1.792 against its 1.778, and since a pair row takes the wider
+of its two ratios, the wing gives up about a per cent of its height to keep the
+row flush. Nothing else in the layout moves.
 
 Replacements are deleted outright rather than kept, because the new frame is the same
 shot done better and there is no reason to carry both: `jet_roadster_MAGNIFIC_2.jpg`
