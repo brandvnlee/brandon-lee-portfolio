@@ -232,7 +232,7 @@ export const projects: Project[] = [
     title: "Mantra",
     subtitle: "Halo vehicle — aggression as form",
     summary:
-      "Mantra gives internal pressure a direction. Intensity becomes a design method rather than a loss of control.",
+      "Mantra preserves intensity in mechanical form. Sound, heat and tension become the remains of an era, conceived as a relic for the future.",
     tools: [
       "Cinema 4D",
       "Houdini FX",
@@ -293,7 +293,7 @@ export const projects: Project[] = [
     title: "Tenet",
     subtitle: "Roadster concept — ambition as principle",
     summary:
-      "Tenet treats ambition as a creative force. Not as an escape from limitation, but as the discipline to question why the limit exists. Its principle is embodied in a roadster that refuses to remain bound to the road.",
+      "Tenet holds to a single principle: the road is a condition, not a boundary. The vehicle extends the idea of the roadster beyond the ground without surrendering its automotive identity.",
     tools: ["Vizcom", "Plasticity", "Cinema 4D", "Redshift", "Photoshop"],
     hero: "tenet/tenet_side_hero.png",
     images: keys("tenet", tenet),
@@ -307,7 +307,7 @@ export const projects: Project[] = [
           "The surface is kept taut to control airflow, reduce visual mass and give the vehicle the focused intent of a weapon.",
       },
       {
-        heading: "To be molded is not to become passive. It is to become precise.",
+        heading: "Being molded is the process of turning instinct into intent.",
       },
     ],
   },
