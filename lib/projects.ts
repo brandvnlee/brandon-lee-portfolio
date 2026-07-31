@@ -123,21 +123,27 @@ const mantraProcess: ImageEntry[] = [
   "mantra_sketches.jpg",
 ];
 
+/**
+ * Nine of these are re-edits delivered as a `tenet_v2` folder, matched frame for
+ * frame against what they supersede — so the running order is unchanged and only
+ * the files under it are newer. The `roadster_*` names that remain are the frames
+ * that were not re-edited.
+ */
 const tenet = [
-  "roadster_studio_side_MAGNIFIC.jpg",
+  "tenet_side_hero.png",
   "roadster_studio_face_MAGNIFIC.jpg",
   "tenet_front_V2.png",
-  "roadster_left_front_face_MAGNIFIC.jpg",
-  "roadster_left_front_dead_MAGNIFIC.jpg",
+  "tenet_fronttq_dark.png",
+  "tenet_front_dark.png",
   "roadster_studio_front_leftfender_MAGNIFIC.jpg",
-  "roadster_left_sidescoop_MAGNIFIC.jpg",
+  "tenet_window.png",
   "tenet_aero.mp4",
-  "roadster_rear_left_3q_MAGNIFIC.jpg",
-  "roadster_right_rear_MAGNIFIC.jpg",
-  "roadster_studio_rear_tailight2_4K_GRAIN_FIX.jpg",
-  "roadster_studio_wing_MAGNIFIC.jpg",
+  "tenet_reartq_spot.png",
+  "tenet_tailamp.png",
+  "tenet_reartq.png",
+  "tenet_wing.png",
   "tenet_jet_V2.png",
-  "teal_bg_take2_MAGNIFIC.jpg",
+  "tenet_side_dark.png",
 ];
 
 /**
@@ -285,7 +291,7 @@ export const projects: Project[] = [
     summary:
       "Tenet treats ambition as a creative force. Not as an escape from limitation, but as the discipline to question why the limit exists. Its principle is embodied in a roadster that refuses to remain bound to the road.",
     tools: ["Vizcom", "Plasticity", "Cinema 4D", "Redshift", "Photoshop"],
-    hero: "tenet/roadster_studio_side_MAGNIFIC.jpg",
+    hero: "tenet/tenet_side_hero.png",
     images: keys("tenet", tenet),
     sections: [
       {

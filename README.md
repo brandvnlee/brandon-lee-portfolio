@@ -349,6 +349,13 @@ that were superseded rather than deleted — `roadster_studio_front_4K_GRAIN_FIX
 which `tenet_front_V2.png` is a cleaner take of, and `roadster_right_sil_MAGNIFIC.jpg`,
 which the aero clip replaced. Add any of them back to the array if you want them.
 
+Tenet was largely re-edited after the fact. Nine frames arrived as a `tenet_v2`
+folder, were matched one to one against the frames they re-graded, and took their
+places in the array under the new `tenet_*` names — the running order did not move.
+The `roadster_*` names still in the array are the frames that were not re-edited.
+`lock_composition_upscale_to_4k_*.png` came off Magnific with its job id for a name
+and was renamed `tenet_reartq_spot.png` on the way in.
+
 Replacements are deleted outright rather than kept, because the new frame is the same
 shot done better and there is no reason to carry both: `jet_roadster_MAGNIFIC_2.jpg`
 (now `tenet_jet_V2.png`), Nomad's `nomad_world_dusk.png` (now `nomad_world_snow.png`)
