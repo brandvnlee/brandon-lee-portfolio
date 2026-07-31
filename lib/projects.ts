@@ -124,18 +124,20 @@ const mantraProcess: ImageEntry[] = [
 ];
 
 /**
- * Nine of these are re-edits delivered as a `tenet_v2` folder, matched frame for
- * frame against what they supersede — so the running order is unchanged and only
- * the files under it are newer. The `roadster_*` names that remain are the frames
- * that were not re-edited.
+ * Almost all of these are re-edits delivered as a `tenet_v2` folder, matched frame
+ * for frame against what they supersede — so the running order is unchanged and only
+ * the files under it are newer. `tenet_front_V2.png` and `tenet_jet_V2.png` came in
+ * the same way, one at a time, before the folder did.
  */
 const tenet = [
   "tenet_side_hero.png",
-  "roadster_studio_face_MAGNIFIC.jpg",
+  "tenet_front_red.png",
   "tenet_front_V2.png",
   "tenet_fronttq_dark.png",
   "tenet_front_dark.png",
-  "roadster_studio_front_leftfender_MAGNIFIC.jpg",
+  // The only portrait on the page, so it is cropped to landscape rather than
+  // paired. At 3584x4800 the crop lands on the wheel, which is the subject.
+  "tenet_tire.png",
   "tenet_window.png",
   "tenet_aero.mp4",
   "tenet_reartq_spot.png",

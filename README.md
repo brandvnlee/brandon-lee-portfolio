@@ -347,14 +347,20 @@ Converted but not listed in `projects.ts`, so they cost a little deploy weight a
 nothing else: Nomad's `interior_image.png` and `reartq.png`, and two Tenet frames
 that were superseded rather than deleted — `roadster_studio_front_4K_GRAIN_FIX.jpg`,
 which `tenet_front_V2.png` is a cleaner take of, and `roadster_right_sil_MAGNIFIC.jpg`,
-which the aero clip replaced. Add any of them back to the array if you want them.
+which the aero clip replaced. They are the last two `roadster_*` files left in
+`public/work/tenet/`. Add either back to the array if you want it.
 
-Tenet was largely re-edited after the fact. Nine frames arrived as a `tenet_v2`
-folder, were matched one to one against the frames they re-graded, and took their
-places in the array under the new `tenet_*` names — the running order did not move.
-The `roadster_*` names still in the array are the frames that were not re-edited.
-`lock_composition_upscale_to_4k_*.png` came off Magnific with its job id for a name
-and was renamed `tenet_reartq_spot.png` on the way in.
+Tenet has been re-edited almost end to end. The frames arrive in a `tenet_v2`
+subfolder, are matched one to one against the frames they re-grade, and take those
+places in the array under new `tenet_*` names — the running order does not move, and
+the superseded source and its WebP are deleted. Twelve arrived this way across two
+drops, and one of them (`tenet_side_hero.png`) was itself re-edited a second time and
+overwritten in place, which needs its WebP deleted by hand so the script re-converts
+it. `lock_composition_upscale_to_4k_*.png` came off Magnific with its job id for a
+name and was renamed `tenet_reartq_spot.png` on the way in.
+
+The subfolder is not walked by `prepare-media.mjs`, so anything left sitting in
+`tenet_v2/` is simply not part of the site. Empty it as you go.
 
 Replacements are deleted outright rather than kept, because the new frame is the same
 shot done better and there is no reason to carry both: `jet_roadster_MAGNIFIC_2.jpg`
