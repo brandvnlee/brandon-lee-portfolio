@@ -11,7 +11,7 @@ export type MediaAsset = {
 };
 
 export const media: Record<string, MediaAsset> = {
-  "mantra/engine_black.png": { src: "/media/mantra/engine_black.5ff56b43.webp", width: 1204, height: 1223 },
+  "mantra/engine_black.png": { src: "/media/mantra/engine_black.99bfca2e.webp", width: 2400, height: 2979 },
   "mantra/enginebay_v2.png": { src: "/media/mantra/enginebay_v2.8b4396a5.webp", width: 2400, height: 1340 },
   "mantra/front_sequence_compressed.png": { src: "/media/mantra/front_sequence_compressed.e3987eb8.webp", width: 2400, height: 1340 },
   "mantra/headlight_sequence.png": { src: "/media/mantra/headlight_sequence.856b957c.webp", width: 2400, height: 1340 },

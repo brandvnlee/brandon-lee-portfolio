@@ -294,8 +294,10 @@ render sitting as a visible box on the near-black page. Standing on its own at h
 the measure was tried next and rejected for the same reason: **every plate meets both
 margins**, and a plate floating in the middle of the page with ground either side is
 the one thing that breaks it. Filling the measure is worth more than the ends of a
-subject, so the lone portrait is cropped. The clay's empty margins were trimmed off
-the source as well (1606x1921 to 1204x1223) so the crop has less air to spend.
+subject, so the lone portrait is cropped. The clay pass has since been re-rendered at
+3712x4608 with the parts colour-coded, and it needs no trimming — it is framed tight
+enough that the 3:2 crop lands on the same read the trimmed 1204x1223 version gave:
+the bay whole, the X-pipe across it, the front wedge at the left.
 
 ### Where plates sit on the page
 
