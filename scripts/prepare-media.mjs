@@ -14,18 +14,35 @@
  *
  *   node scripts/prepare-media.mjs
  *
- * Safe to re-run: unchanged files are skipped, so adding one render does not
- * reprocess the archive. Pass --force to rebuild everything.
+ * Output filenames carry a hash of the source, so re-running converts only what
+ * changed and outputs whose source is gone are pruned. Pass --force to rebuild
+ * everything.
  */
 
 import { execFile } from "node:child_process";
-import { mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 import ffmpeg from "ffmpeg-static";
 import sharp from "sharp";
 
 const run = promisify(execFile);
+
+/**
+ * Served files carry a stamp of the source they came from.
+ *
+ * Most re-edits arrive under a new filename and would need none of this. But a
+ * frame re-edited a second time is overwritten in place, and then the URL is the
+ * one thing that has not changed — so the next/image optimiser serves what it
+ * cached against that URL, the browser serves what it cached against that, and
+ * the new grade never reaches the page. A stamped filename makes a changed file a
+ * changed request, and the stamp doubles as the "has this already been converted"
+ * check that mtimes used to do badly (a copied file looks new, an edited file
+ * restored from backup looks old).
+ */
+const stampOf = async (file) =>
+  createHash("sha1").update(await readFile(file)).digest("hex").slice(0, 8);
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SRC = path.join(ROOT, "public", "work");
@@ -63,18 +80,19 @@ const excluded = (file) => EXCLUDE.some((pattern) => pattern.test(file));
 /** Even dimensions, or H.264 refuses the frame. */
 const scale = (width) => `scale='min(${width},iw)':-2`;
 
-async function newerThan(source, target) {
+const exists = async (file) => {
   try {
-    const [a, b] = await Promise.all([stat(source), stat(target)]);
-    return a.mtimeMs > b.mtimeMs;
+    await stat(file);
+    return true;
   } catch {
-    return true; // target missing
+    return false;
   }
-}
+};
 
 const entries = [];
 let processed = 0;
 let skipped = 0;
+let pruned = 0;
 let sourceBytes = 0;
 let outputBytes = 0;
 
@@ -93,7 +111,8 @@ for (const slug of slugs) {
 
   for (const file of files) {
     const source = path.join(sourceDir, file);
-    const base = file.replace(/\.[^.]+$/, "");
+    const stamp = await stampOf(source);
+    const base = `${file.replace(/\.[^.]+$/, "")}.${stamp}`;
     const target = path.join(outDir, `${base}.webp`);
 
     sourceBytes += (await stat(source)).size;
@@ -101,7 +120,7 @@ for (const slug of slugs) {
     if (isFilm(file)) {
       const film = path.join(outDir, `${base}.mp4`);
 
-      if (FORCE || (await newerThan(source, film))) {
+      if (FORCE || !(await exists(film))) {
         // No audio track: the clip plays on sight, and a plate that makes noise
         // is a plate nobody forgives.
         await run(ffmpeg, [
@@ -142,7 +161,7 @@ for (const slug of slugs) {
       continue;
     }
 
-    if (FORCE || (await newerThan(source, target))) {
+    if (FORCE || !(await exists(target))) {
       await sharp(source)
         .rotate() // honour EXIF before we read dimensions off the result
         .resize({ width: MAX_WIDTH, withoutEnlargement: true })
@@ -156,7 +175,32 @@ for (const slug of slugs) {
     const { width, height } = await sharp(target).metadata();
     outputBytes += (await stat(target)).size;
 
-    entries.push({ key: `${slug}/${file}`, src: `/media/${slug}/${base}.webp`, width, height });
+    entries.push({
+      key: `${slug}/${file}`,
+      src: `/media/${slug}/${base}.webp`,
+      width,
+      height,
+    });
+  }
+}
+
+/**
+ * Anything in public/media/ that this run did not just account for is the output
+ * of a source that has since been deleted, excluded or re-edited. Stamped names
+ * mean those files would otherwise sit there forever, shipping in every deploy
+ * and never being requested.
+ */
+const wanted = new Set(
+  entries.flatMap((entry) => [entry.src, entry.poster].filter(Boolean)),
+);
+
+for (const slug of slugs) {
+  const outDir = path.join(OUT, slug);
+
+  for (const file of await readdir(outDir)) {
+    if (wanted.has(`/media/${slug}/${file}`)) continue;
+    await rm(path.join(outDir, file));
+    pruned += 1;
   }
 }
 
@@ -192,6 +236,6 @@ ${body}
 
 const mb = (bytes) => `${(bytes / 1024 / 1024).toFixed(1)}MB`;
 console.log(
-  `media: ${processed} converted, ${skipped} unchanged, ${entries.length} total\n` +
+  `media: ${processed} converted, ${skipped} unchanged, ${pruned} pruned, ${entries.length} total\n` +
     `weight: ${mb(sourceBytes)} source -> ${mb(outputBytes)} served`,
 );

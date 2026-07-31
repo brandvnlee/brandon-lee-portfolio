@@ -232,8 +232,16 @@ deployed.
 The manifest exists because `next/image` needs real dimensions to lay an image
 out, and these renders are a mix of 16:9 and 4:5 — guessing a single ratio would
 crop them. Content files reference `"<slug>/<original filename>"` and the
-manifest resolves it to the optimised asset. Re-runs skip unchanged files;
-`--force` rebuilds everything.
+manifest resolves it to the optimised asset.
+
+Outputs are named `<base>.<hash of the source>.webp`, which is what makes a
+re-edit visible. A frame re-edited under the same filename used to produce the
+same URL, and the same URL is served from three caches that had no way of knowing
+the pixels behind it had changed — the `next/image` optimiser, the CDN and the
+browser. The regrade reached the repo and never reached the page. A stamped name
+makes changed bytes a changed request, and doubles as the "already converted"
+check, so re-runs convert only what moved and outputs whose source is gone or
+re-edited are pruned. `--force` rebuilds everything.
 
 Add renders by dropping them in `public/work/<slug>/`, running `npm run media`,
 then listing the filenames in `lib/projects.ts`.
@@ -353,11 +361,11 @@ which the aero clip replaced. They are the last two `roadster_*` files left in
 Tenet has been re-edited almost end to end. The frames arrive in a `tenet_v2`
 subfolder, are matched one to one against the frames they re-grade, and take those
 places in the array under new `tenet_*` names — the running order does not move, and
-the superseded source and its WebP are deleted. Twelve arrived this way across two
-drops, and one of them (`tenet_side_hero.png`) was itself re-edited a second time and
-overwritten in place, which needs its WebP deleted by hand so the script re-converts
-it. `lock_composition_upscale_to_4k_*.png` came off Magnific with its job id for a
-name and was renamed `tenet_reartq_spot.png` on the way in.
+the superseded source is deleted. Twelve arrived this way across two drops, and one
+of them (`tenet_side_hero.png`) was itself re-edited a second time and overwritten in
+place — the case the stamped output names above exist for.
+`lock_composition_upscale_to_4k_*.png` came off Magnific with its job id for a name
+and was renamed `tenet_reartq_spot.png` on the way in.
 
 The subfolder is not walked by `prepare-media.mjs`, so anything left sitting in
 `tenet_v2/` is simply not part of the site. Empty it as you go.
