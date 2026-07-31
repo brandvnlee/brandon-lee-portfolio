@@ -294,7 +294,7 @@ export const projects: Project[] = [
     subtitle: "Roadster concept — ambition as principle",
     summary:
       "Tenet holds to a single principle: the road is a condition, not a boundary. The vehicle extends the idea of the roadster beyond the ground without surrendering its automotive identity.",
-    tools: ["Vizcom", "Plasticity", "Cinema 4D", "Redshift", "Photoshop"],
+    tools: ["Vizcom", "ComfyUI", "Plasticity", "Cinema 4D", "Redshift", "Photoshop"],
     hero: "tenet/tenet_side_hero.png",
     images: keys("tenet", tenet),
     sections: [
