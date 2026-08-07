@@ -67,6 +67,13 @@ export type Project = {
   hero?: string;
   /** YouTube id of the project film, shown as the lead media. */
   video?: string;
+  /**
+   * Media key for the film's own still, shown until the film is clicked. Falls
+   * back to `hero`. Worth setting: YouTube's placeholder is a 120x90 grey stub
+   * for any size the video has no thumbnail for, which at full width is a grey
+   * smear across the frame.
+   */
+  poster?: string;
   images: ImageEntry[];
   sections: Section[];
 };
@@ -84,14 +91,19 @@ export type Project = {
  * plates sit under the statement about the engine.
  */
 
-/** The opening run: the silhouette, the hero, and the face it leads with. */
+/**
+ * The opening run: the silhouette, the hero, and the face it leads with.
+ *
+ * `headlight_sequence.png` is no longer a plate here — it is the film's poster,
+ * and the film sits directly above this run, so leaving it in showed the same
+ * frame twice within a screen of itself.
+ */
 const mantraOpening: ImageEntry[] = [
   "mantra_sil_intro_EDIT.png",
   "mantra_front3q_MAGNIFIC.png",
   // Two reads of the same face, dead-on and from above. They answer each other,
   // so they share a row rather than repeating the frame twice at full width.
   ["mantra_face_head_MAGNIFIC.png", "mantra_face_tiltdown_MAGNIFIC_2.png"],
-  "headlight_sequence.png",
 ];
 
 /** _1 — the form itself, read front to rear. */
@@ -244,6 +256,16 @@ export const projects: Project[] = [
     ],
     hero: "mantra/mantra_front3q_MAGNIFIC.png",
     video: "3FTGU0MKbcM",
+    /**
+     * The film's key art: the frame the video itself leads with.
+     *
+     * This is the clean 5504px render, not the graded thumbnail on YouTube —
+     * that one carries the Motor Film Awards laurel, and the only copy to hand
+     * is a 1024px JPEG, which would be upscaled on any desktop. Drop the
+     * full-size export into public/work/mantra/ and point this at it to get the
+     * laurel back at full quality.
+     */
+    poster: "mantra/headlight_sequence.png",
     images: keys("mantra", mantraOpening),
     sections: [
       {

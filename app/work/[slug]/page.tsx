@@ -4,6 +4,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import SplitText from "@/components/type/SplitText";
+import Film from "@/components/site/Film";
 import FilmPlate from "@/components/site/FilmPlate";
 import Footer from "@/components/site/Footer";
 import { asset, bySlug, projects, creditsOf } from "@/lib/projects";
@@ -62,6 +63,12 @@ export default async function ProjectPage({
 
   // Sections that name their own plates are placed exactly as written. Where none
   // do, the project's plates are split evenly across the page instead.
+  // A film needs a still of its own. `poster` names one; the index hero stands
+  // in where it does not, and a project with neither simply has no film.
+  const film = project.video
+    ? asset(project.poster ?? project.hero ?? "")
+    : null;
+
   const placed = project.sections.some((section) => section.images);
   const groups = placed
     ? [
@@ -96,24 +103,22 @@ export default async function ProjectPage({
         ) : null}
       </header>
 
-      {project.video ? (
+      {film ? (
         <figure className="case__film">
-          {/* nocookie host, and lazy so the YouTube player is not fetched
-              until the film is actually approached. */}
-          <iframe
-            src={`https://www.youtube-nocookie.com/embed/${project.video}?rel=0&modestbranding=1`}
-            title={`${project.title} — film`}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-            loading="lazy"
-          />
+          {/* Our own still until it is clicked, then the nocookie player. The
+              poster is a frame from the project rather than YouTube's, which is
+              both sharper and the only way this frame is reliable at full
+              width — see components/site/Film.tsx. */}
+          <Film id={project.video!} title={project.title} poster={film} />
           <figcaption className="micro case__filmCaption">
             Film — {project.title}
           </figcaption>
         </figure>
       ) : null}
 
-      <PlateGroup entries={groups[0]} first />
+      {/* Whatever is actually first on the page is the plate worth loading
+          eagerly, and when there is a film that is the film's poster. */}
+      <PlateGroup entries={groups[0]} first={!film} />
 
       {project.sections.map((section, i) => (
         <div key={section.heading}>
@@ -212,7 +217,7 @@ function entriesOf(images: ImageEntry[]): Entry[] {
  */
 function rowsOf(entries: Entry[]): Row[] {
   const rows: Row[] = [];
-  let portraits: Plate[] = [];
+  const portraits: Plate[] = [];
 
   const flushPortraits = () => {
     while (portraits.length >= 2) rows.push({ plates: portraits.splice(0, 2) });

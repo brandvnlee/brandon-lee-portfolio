@@ -450,9 +450,42 @@ information was structural padding, not content anyone wanted.
 ### Film
 
 Set `video` to a YouTube id and it renders as the lead media on the case page,
-above the plates. Mantra points at `3FTGU0MKbcM` ("THE MANTRA"). The embed uses
-the `youtube-nocookie` host and stays lazy, so the player is not fetched until
-the film is approached.
+above the plates. Mantra points at `3FTGU0MKbcM` ("THE MANTRA"). Set `poster`
+alongside it to name the still shown until it is clicked; `hero` stands in if you
+do not. Mantra uses `headlight_sequence.png`, the film's key art, which is why that
+frame is no longer also a plate — the film sits directly above the opening run, so
+it appeared twice within a screen of itself.
+
+That is the **clean 5504px render**, not the graded thumbnail on YouTube, which
+carries the Motor Film Awards laurel. The laurel belongs on the poster and the way
+to get it is a full-size export into `public/work/mantra/`; the copy to hand is a
+1024px JPEG, and this frame is 1324px wide at a 1440px viewport and over 2300px on
+a 5K display, so it would be upscaled everywhere it matters. Do not trade the
+resolution of the lead media for it.
+
+**Do not put YouTube's own player on the page unplayed.** It was there and looked
+broken, and the reason is worth knowing before anyone reinstates it: for a
+thumbnail size a video does not have, YouTube serves a **120x90 grey stub rather
+than a 404**. THE MANTRA has no HD thumbnail — `maxresdefault` and `hq720` both
+come back as that stub — so a player 1324px wide asked for the big one and
+stretched 120px of grey across the frame. Only `sddefault` (640x480) and below are
+real, which is why it looked fine on a phone and broke on a desktop: the bug is a
+function of player width, not of the page.
+
+`components/site/Film.tsx` serves the still itself and mounts the iframe on click
+with `autoplay=1`, so it is still one click to watch. That fixes the grey at the
+root and pays twice more: the still is a 2400px frame from the project rather than
+a 640px screengrab, and **no YouTube script, frame or cookie is fetched until
+someone asks for the film** — a case page now makes zero third-party requests.
+
+The other half of the fix is not in this repo: uploading a 1920x1080 custom
+thumbnail in YouTube Studio would give the video a real `maxresdefault` and mend
+it everywhere it is embedded or linked. Worth doing regardless. The page no longer
+depends on it.
+
+The play mark is a hairline square around a triangle rather than a round button,
+which is the same call as the tag on the index — a circle would be the one soft
+shape on a page built from rules and right angles.
 
 ## Naming
 

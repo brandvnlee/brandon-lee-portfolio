@@ -727,12 +727,97 @@ ul {
   margin-bottom: clamp(1rem, 3vw, 2.5rem);
 }
 
-.case__film iframe {
+.case__film :is(iframe, .film) {
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
   border: 0;
   background: var(--tint);
+}
+
+/* --------------------------------------------------------------------------
+   FILM CUE
+
+   The film is our own still with a play mark on it until it is clicked, so the
+   frame is art-directed and sharp at any width instead of trusting YouTube's
+   placeholder — see components/site/Film.tsx for what that placeholder does at
+   full width.
+   -------------------------------------------------------------------------- */
+
+.film {
+  position: relative;
+  padding: 0;
+  color: var(--fg);
+  cursor: pointer;
+  isolation: isolate;
+}
+
+.film img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+/* The mark sits on the centre of the frame, at a size that reads as a control
+   rather than as a watermark. In `em` off the label size so the two scale
+   together. */
+.film__cue {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: clamp(3.25rem, 5vw, 4.5rem);
+  aspect-ratio: 1;
+  border: 1px solid var(--fg);
+  /* Enough ground behind the triangle to hold it over a bright frame, without
+     becoming a panel. */
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+
+.film__cue svg {
+  width: 28%;
+  height: auto;
+  /* The triangle's optical centre sits left of its bounding box. */
+  margin-left: 6%;
+}
+
+.film__label {
+  position: absolute;
+  left: var(--gap);
+  bottom: var(--gap);
+  opacity: var(--w-mid);
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.film:hover img {
+  opacity: 0.82;
+}
+
+.film:hover .film__cue {
+  background: var(--bg);
+  border-color: var(--paper-hi);
+}
+
+.film:hover .film__label {
+  opacity: var(--w-loud);
+}
+
+/* The mark is the focus target — the button fills the frame, so a ring around
+   it would trace the whole plate. */
+.film:focus-visible {
+  outline: none;
+}
+
+.film:focus-visible .film__cue {
+  background: var(--bg);
+  outline: 1px solid var(--paper-hi);
+  outline-offset: 3px;
 }
 
 .case__filmCaption {
