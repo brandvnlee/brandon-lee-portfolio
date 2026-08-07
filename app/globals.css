@@ -787,14 +787,6 @@ ul {
   margin-left: 6%;
 }
 
-.film__label {
-  position: absolute;
-  left: var(--gap);
-  bottom: var(--gap);
-  opacity: var(--w-mid);
-  transition: opacity var(--dur-fast) var(--ease-out);
-}
-
 .film:hover img {
   opacity: 0.82;
 }
@@ -802,10 +794,6 @@ ul {
 .film:hover .film__cue {
   background: var(--bg);
   border-color: var(--paper-hi);
-}
-
-.film:hover .film__label {
-  opacity: var(--w-loud);
 }
 
 /* The mark is the focus target — the button fills the frame, so a ring around

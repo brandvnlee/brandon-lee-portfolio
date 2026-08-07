@@ -452,16 +452,22 @@ information was structural padding, not content anyone wanted.
 Set `video` to a YouTube id and it renders as the lead media on the case page,
 above the plates. Mantra points at `3FTGU0MKbcM` ("THE MANTRA"). Set `poster`
 alongside it to name the still shown until it is clicked; `hero` stands in if you
-do not. Mantra uses `headlight_sequence.png`, the film's key art, which is why that
-frame is no longer also a plate — the film sits directly above the opening run, so
-it appeared twice within a screen of itself.
+do not. Mantra uses `thumbnail_headlight_sequence.jpg`, the film's key art with the
+Motor Film Awards laurel on it, which is why `headlight_sequence.png` is no longer
+also a plate — that is the same shot, and the film sits directly above the opening
+run, so it appeared twice within a screen of itself.
 
-That is the **clean 5504px render**, not the graded thumbnail on YouTube, which
-carries the Motor Film Awards laurel. The laurel belongs on the poster and the way
-to get it is a full-size export into `public/work/mantra/`; the copy to hand is a
-1024px JPEG, and this frame is 1324px wide at a 1440px viewport and over 2300px on
-a 5K display, so it would be upscaled everywhere it matters. Do not trade the
-resolution of the lead media for it.
+**That poster is 1024x575 and wants replacing.** It fills a plate 1324 CSS px wide
+at a 1440px viewport, twice that on a retina panel, so it is upscaled. The clean
+5504px render was tried first and the laurel cannot be lifted onto it: the two are
+different grades — the render's red channel reads about twice as strong — so any
+patch shows. Between a soft frame with the nomination on it and a sharp frame
+without, the nomination wins. Drop a 1920px-or-wider export into
+`public/work/mantra/`, run `npm run media`, and repoint `poster`.
+
+There is deliberately **no label on the poster**. The mark says what the control
+does, and a word over the key art was one thing too many on it; the button carries
+its name in `aria-label` instead.
 
 **Do not put YouTube's own player on the page unplayed.** It was there and looked
 broken, and the reason is worth knowing before anyone reinstates it: for a
@@ -633,8 +639,19 @@ Route changes already reset the scroll, but clicking `Index` **while on the
 index** is not a navigation — the route does not change, so nothing resets and
 the click appeared to do nothing. Jumping explicitly covers both cases.
 
+## Analytics
+
+`<Analytics />` from `@vercel/analytics/next` sits at the end of the body in
+`app/layout.tsx`. It counts page views on Vercel deployments only — nothing loads
+on a local run — and sets no cookie, so there is no consent banner on a portfolio.
+Figures appear under Analytics in the Vercel dashboard a minute or so after real
+traffic; an ad blocker will suppress your own visits, which is the usual reason the
+panel looks empty when you check it yourself.
+
 ## Known follow-ups
 
+- The Mantra film poster is a 1024px JPEG and is upscaled on any desktop. Replace
+  it with a full-size export of the laurel thumbnail — see [Film](#film).
 - `tools` in `lib/projects.ts` is placeholder software — correct it per project.
 - There is no `/about` page; the nav entry was removed rather than left dead.
 - A hydration warning appears in dev listing `data-cursor-ref` attributes. That

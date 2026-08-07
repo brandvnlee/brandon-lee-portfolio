@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import SmoothScroll from "@/components/site/SmoothScroll";
 import Motion from "@/components/type/Motion";
@@ -19,6 +20,10 @@ export default function RootLayout({
         <Motion />
         <Header />
         {children}
+        {/* Page views, counted by Vercel. It ships nothing on a local run — the
+            script only loads on a Vercel deployment — and sets no cookie, so it
+            does not put a consent banner on a portfolio. */}
+        <Analytics />
       </body>
     </html>
   );

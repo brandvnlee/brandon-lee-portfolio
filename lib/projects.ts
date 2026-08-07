@@ -94,9 +94,9 @@ export type Project = {
 /**
  * The opening run: the silhouette, the hero, and the face it leads with.
  *
- * `headlight_sequence.png` is no longer a plate here — it is the film's poster,
- * and the film sits directly above this run, so leaving it in showed the same
- * frame twice within a screen of itself.
+ * `headlight_sequence.png` is no longer a plate here. The film's poster is that
+ * same frame with the laurel on it, and the film sits directly above this run,
+ * so leaving it in showed the same shot twice within a screen of itself.
  */
 const mantraOpening: ImageEntry[] = [
   "mantra_sil_intro_EDIT.png",
@@ -257,15 +257,18 @@ export const projects: Project[] = [
     hero: "mantra/mantra_front3q_MAGNIFIC.png",
     video: "3FTGU0MKbcM",
     /**
-     * The film's key art: the frame the video itself leads with.
+     * The film's key art, carrying the Motor Film Awards laurel.
      *
-     * This is the clean 5504px render, not the graded thumbnail on YouTube —
-     * that one carries the Motor Film Awards laurel, and the only copy to hand
-     * is a 1024px JPEG, which would be upscaled on any desktop. Drop the
-     * full-size export into public/work/mantra/ and point this at it to get the
-     * laurel back at full quality.
+     * REPLACE THIS FILE WHEN THE FULL-SIZE EXPORT TURNS UP. It is 1024x575, and
+     * the plate it fills is 1324 CSS px at a 1440 viewport — twice that on a
+     * retina panel — so it is being upscaled. `headlight_sequence.png` is the
+     * same frame at 5504px and was tried first, but it is a different grade (its
+     * red channel reads twice as strong), so the laurel cannot be lifted onto it
+     * without the patch showing. The laurel is the point, so the soft frame wins
+     * for now. Drop a 1920px-or-wider export into public/work/mantra/, run
+     * `npm run media`, and point this at it.
      */
-    poster: "mantra/headlight_sequence.png",
+    poster: "mantra/thumbnail_headlight_sequence.jpg",
     images: keys("mantra", mantraOpening),
     sections: [
       {

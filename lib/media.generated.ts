@@ -29,6 +29,7 @@ export const media: Record<string, MediaAsset> = {
   "mantra/perspective_front_black.jpg": { src: "/media/mantra/perspective_front_black.79a885e7.webp", width: 2133, height: 1200 },
   "mantra/perspective_rear_black.jpg": { src: "/media/mantra/perspective_rear_black.4992b46b.webp", width: 2086, height: 1173 },
   "mantra/tailight_sequence_MAGNIFIC.jpg": { src: "/media/mantra/tailight_sequence_MAGNIFIC.8b6fa835.webp", width: 1920, height: 1080 },
+  "mantra/thumbnail_headlight_sequence.jpg": { src: "/media/mantra/thumbnail_headlight_sequence.58a95188.webp", width: 1024, height: 575 },
   "mantra/winglets_magnific.jpg": { src: "/media/mantra/winglets_magnific.dfbdec02.webp", width: 1920, height: 1080 },
   "nomad/interior_image.png": { src: "/media/nomad/interior_image.8ae19a4c.webp", width: 1956, height: 1060 },
   "nomad/nomad_detail_tire.png": { src: "/media/nomad/nomad_detail_tire.4b0cccab.webp", width: 2400, height: 1340 },

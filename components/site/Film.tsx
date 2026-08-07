@@ -44,7 +44,15 @@ export default function Film({
   }
 
   return (
-    <button className="film" type="button" onClick={() => setPlaying(true)}>
+    <button
+      className="film"
+      type="button"
+      onClick={() => setPlaying(true)}
+      /* The name lives here rather than in a caption on the frame. A label over
+         the poster was one more thing on top of the key art, and the mark says
+         what the control does without it. */
+      aria-label={`Play the film — ${title}`}
+    >
       <Image
         src={poster.src}
         alt=""
@@ -60,7 +68,6 @@ export default function Film({
           <path d="M0 0l12 7-12 7z" fill="currentColor" />
         </svg>
       </span>
-      <span className="micro film__label">Play film</span>
     </button>
   );
 }
