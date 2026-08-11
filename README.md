@@ -641,12 +641,32 @@ the click appeared to do nothing. Jumping explicitly covers both cases.
 
 ## Analytics
 
-`<Analytics />` from `@vercel/analytics/next` sits at the end of the body in
-`app/layout.tsx`. It counts page views on Vercel deployments only — nothing loads
-on a local run — and sets no cookie, so there is no consent banner on a portfolio.
-Figures appear under Analytics in the Vercel dashboard a minute or so after real
-traffic; an ad blocker will suppress your own visits, which is the usual reason the
-panel looks empty when you check it yourself.
+Two of them, at the end of the body in `app/layout.tsx`, counting the same visits
+in different places. Keep both or drop either; they do not interfere.
+
+`<Analytics />` from `@vercel/analytics/next` counts page views on Vercel
+deployments only — nothing loads on a local run — and sets no cookie, so there is
+no consent banner on a portfolio. Note that the script comes from an obfuscated
+path rather than `/_vercel/insights/`, which is Vercel dodging blocklists.
+
+`<GoogleAnalytics gaId="G-1XJLK16LG7" />` from `@next/third-parties/google` is GA4.
+**Use the component, not the snippet Google gives you** — it is the same `gtag.js`
+tag, loaded after hydration instead of blocking in the head. The measurement ID is
+public by design, since it travels in every request the tag makes, so it is written
+in the layout rather than kept in an environment variable that could only fail
+silently on a deploy.
+
+**Client-side navigations need no code.** GA4 counts a page view on browser history
+changes, which is what the App Router does when you click a project, so each case
+page reports its own path and title without a `usePathname` effect anywhere. This
+was verified rather than assumed: clicking through from the index sends a second
+`page_view` to `/g/collect` with `dl=/work/mantra`. It depends on **Enhanced
+Measurement → "page changes based on browser history events"** staying enabled in
+the GA admin panel, which is the default. If you ever send page views manually, turn
+that off or everything doubles.
+
+Either dashboard will look empty when you check it yourself if you run an ad
+blocker — it suppresses your own visits, not other people's.
 
 ## Known follow-ups
 
