@@ -59,8 +59,6 @@ export type Project = {
    * to set — correct them per project before this ships.
    */
   tools?: string[];
-  /** Work that cannot be shown. Renders a redacted entry with no imagery. */
-  restricted?: boolean;
   /** Closes the colophon line. Partners, studios, anyone owed a name. */
   credit?: string;
   /** Media key shown behind the title on the index. */
@@ -99,7 +97,7 @@ export type Project = {
  * so leaving it in showed the same shot twice within a screen of itself.
  */
 const mantraOpening: ImageEntry[] = [
-  "mantra_sil_intro_EDIT.png",
+  "mantra_rear3q_MAGNIFIC.png",
   "mantra_front3q_MAGNIFIC.png",
   // Two reads of the same face, dead-on and from above. They answer each other,
   // so they share a row rather than repeating the frame twice at full width.
@@ -113,7 +111,7 @@ const mantraForm: ImageEntry[] = [
   // frame here still on the old upscale, so the row takes the re-render's ratio
   // and trims a per cent off the wing rather than standing ragged.
   ["winglets_magnific.jpg", "front_sequence_compressed.png"],
-  "mantra_rear3q_MAGNIFIC.png",
+  "mantra_sil_intro_EDIT.png",
   "mantra_rear_left_MAGNIFIC.png",
   "mantra_rear_tire_MAGNIFIC.png",
 ];
@@ -223,6 +221,48 @@ const nomadWorld: ImageEntry[] = [
   "nomad_world_recon.mov",
 ];
 
+/**
+ * Roadster is placed section by section, like Mantra and Nomad, so each run of
+ * plates sits under the statement it illustrates. Within a section the files keep
+ * the order they were numbered in; the launch frames move from fourth to the
+ * second section because that is where the statement about SpaceX is.
+ *
+ * Every frame is landscape, so pairs are chosen by hand from views of the same
+ * set. Most are 3:2; the wing frame is 4:3, so beside a 3:2 it gives up about a
+ * tenth of its height to sit flush.
+ *
+ * The studio frames are cropped in from the originals (kept untouched in
+ * `_originals/`), which had the car occupying a third of the frame in a field of
+ * black; at full width that read as empty page rather than as atmosphere.
+ */
+
+/** The opening run: the vehicle in the studio, side, three-quarter and front. */
+const roadsterOpening: ImageEntry[] = ["1.jpg", "2.jpg", "Roadster_79.jpg"];
+
+/** _1 — efficiency and minimalism: the cabin, then the details of the body. */
+const roadsterForm: ImageEntry[] = [
+  "8.jpg",
+  "9.jpg",
+  "10.jpg",
+  "11.jpg",
+  "12.jpg",
+  "13.jpg",
+  "14.jpg",
+  ["Roadster_73.jpg", "16.jpg"],
+];
+
+/** _2 — Tesla and SpaceX: the launch, the flight, and the astronaut beside it. */
+const roadsterConvergence: ImageEntry[] = [
+  "4.jpg",
+  ["5.jpg", "6.jpg"],
+  "7.jpg",
+  "17.jpg",
+  ["18.jpg", "19.jpg"],
+];
+
+/** _3 — no achievement is final: the car at night, doors up, ready to go again. */
+const roadsterProgress: ImageEntry[] = ["20.jpg", "21.jpg"];
+
 const keys = (slug: string, files: ImageEntry[]): ImageEntry[] =>
   files.map((file) => {
     const prefix = (name: string) => `${slug}/${name}`;
@@ -235,10 +275,94 @@ const keys = (slug: string, files: ImageEntry[]): ImageEntry[] =>
 /**
  * Array order is the running order. It drives the numbering on the index, the
  * "NN / NN" counter on each case page, and the next-project chain, so reordering
- * here is the only edit a reordering needs. Roadster stays last: it is the one
- * page with no next link, so it has to be the end of the chain.
+ * here is the only edit a reordering needs. The chain wraps, so the last
+ * project's link reads "Back to" and leads to the first.
  */
 export const projects: Project[] = [
+  {
+    slug: "roadster",
+    title: "Roadster",
+    subtitle: "Tesla — SpaceX",
+    summary:
+      "The Roadster is an uncompromising pursuit of the extraordinary. Born from the ambition to defy the impossible, the Roadster blurs the line between automobile and rocket, redefining the limits of speed, acceleration, and human capability.",
+    // Disciplines rather than software, but set in the same place and the same
+    // way as the other projects' tool lists so the colophon reads as one system.
+    tools: ["Art Direction", "Visualisation", "VFX", "CGI"],
+    // A looser cut of plate 1 than the one on the case page, so the car sits at
+    // the same scale behind its title as the other heroes do.
+    hero: "roadster/roadster_hero.jpg",
+    video: "cvKIR-c1SsU",
+    // The video's own key art, the thrusters firing. It is not one of the plates,
+    // so the film does not repeat a frame from directly below it.
+    poster: "roadster/roadster_film_thumbnail.jpg",
+    images: keys("roadster", roadsterOpening),
+    sections: [
+      {
+        heading:
+          "Inspired by the XB-70 Valkyrie and Lotus Esprit Turbo, the Roadster embraces a philosophy of pure efficiency, where radical minimalism meets extreme performance.",
+        images: keys("roadster", roadsterForm),
+      },
+      {
+        heading:
+          "The creative challenge was to capture the convergence of Tesla and SpaceX, merging the worlds of automotive design and aerospace engineering into a singular vision.",
+        images: keys("roadster", roadsterConvergence),
+      },
+      {
+        heading:
+          "Roadster embodies humanity's relentless pursuit of progress, building toward a future among the stars.",
+        images: keys("roadster", roadsterProgress),
+      },
+    ],
+  },
+  {
+    slug: "tenet",
+    title: "Tenet",
+    subtitle: "Roadster concept — ambition as principle",
+    summary:
+      "Tenet holds to a single principle: the road is a condition, not a boundary. The vehicle extends the idea of the roadster beyond the ground without surrendering its automotive identity.",
+    tools: ["Vizcom", "ComfyUI", "Plasticity", "Cinema 4D", "Redshift", "Photoshop"],
+    hero: "tenet/tenet_side_hero.png",
+    images: keys("tenet", tenet),
+    sections: [
+      {
+        heading:
+          "Raw ambition seeks escape. Refined ambition creates its own terms. Tenet imagines the roadster as the result of that transformation, shaped by the precision and aerodynamic authority of stealth aircraft.",
+      },
+      {
+        heading:
+          "The surface is kept taut to control airflow, reduce visual mass and give the vehicle the focused intent of a weapon.",
+      },
+      {
+        heading: "Being molded is the process of turning instinct into intent.",
+      },
+    ],
+  },
+  {
+    slug: "nomad",
+    title: "Nomad",
+    subtitle: "Off-road platform — adaptation as structure",
+    summary:
+      "Nomad explores the world as the first act of design. The object emerges from its conditions, values and limitations.",
+    tools: ["Vizcom", "ComfyUI", "Plasticity", "Cinema 4D", "Redshift", "Photoshop"],
+    hero: "nomad/nomad_HERO.png",
+    images: keys("nomad", nomadOpening),
+    sections: [
+      {
+        heading:
+          "The design began with impermanence. The world changes, territory shifts, and the object must move with it.",
+        images: keys("nomad", nomadObject),
+      },
+      {
+        heading:
+          "A tool is defined by the way it is used. The interior reveals how the human body enters, occupies and operates the machine.",
+        images: keys("nomad", nomadMachine),
+      },
+      {
+        heading: "The vehicle is only one fragment of a larger system.",
+        images: keys("nomad", nomadWorld),
+      },
+    ],
+  },
   {
     slug: "mantra",
     title: "Mantra",
@@ -286,71 +410,6 @@ export const projects: Project[] = [
         images: keys("mantra", mantraProcess),
       },
     ],
-  },
-  {
-    slug: "nomad",
-    title: "Nomad",
-    subtitle: "Off-road platform — adaptation as structure",
-    summary:
-      "Nomad explores the world as the first act of design. The object emerges from its conditions, values and limitations.",
-    tools: ["Vizcom", "ComfyUI", "Plasticity", "Cinema 4D", "Redshift", "Photoshop"],
-    hero: "nomad/nomad_HERO.png",
-    images: keys("nomad", nomadOpening),
-    sections: [
-      {
-        heading:
-          "The design began with impermanence. The world changes, territory shifts, and the object must move with it.",
-        images: keys("nomad", nomadObject),
-      },
-      {
-        heading:
-          "A tool is defined by the way it is used. The interior reveals how the human body enters, occupies and operates the machine.",
-        images: keys("nomad", nomadMachine),
-      },
-      {
-        heading: "The vehicle is only one fragment of a larger system.",
-        images: keys("nomad", nomadWorld),
-      },
-    ],
-  },
-  {
-    slug: "tenet",
-    title: "Tenet",
-    subtitle: "Roadster concept — ambition as principle",
-    summary:
-      "Tenet holds to a single principle: the road is a condition, not a boundary. The vehicle extends the idea of the roadster beyond the ground without surrendering its automotive identity.",
-    tools: ["Vizcom", "ComfyUI", "Plasticity", "Cinema 4D", "Redshift", "Photoshop"],
-    hero: "tenet/tenet_side_hero.png",
-    images: keys("tenet", tenet),
-    sections: [
-      {
-        heading:
-          "Raw ambition seeks escape. Refined ambition creates its own terms. Tenet imagines the roadster as the result of that transformation, shaped by the precision and aerodynamic authority of stealth aircraft.",
-      },
-      {
-        heading:
-          "The surface is kept taut to control airflow, reduce visual mass and give the vehicle the focused intent of a weapon.",
-      },
-      {
-        heading: "Being molded is the process of turning instinct into intent.",
-      },
-    ],
-  },
-  {
-    slug: "roadster",
-    title: "Roadster",
-    subtitle: "Tesla — under NDA",
-    summary: "Production work at Tesla, withheld under NDA.",
-    restricted: true,
-    credit: "In collaboration with SpaceX",
-    images: [],
-    /**
-     * Empty on purpose. The page is the title and the statement and nothing
-     * else — no drawn void, no sections explaining the absence at length. The
-     * summary above already says everything that can be said, and stopping
-     * there is more confident than filling the space.
-     */
-    sections: [],
   },
 ];
 

@@ -42,16 +42,35 @@ const run = promisify(execFile);
  * restored from backup looks old).
  */
 const stampOf = async (file) =>
-  createHash("sha1").update(await readFile(file)).digest("hex").slice(0, 8);
+  createHash("sha1")
+    .update(await readFile(file))
+    .update(ENCODING)
+    .digest("hex")
+    .slice(0, 8);
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SRC = path.join(ROOT, "public", "work");
 const OUT = path.join(ROOT, "public", "media");
 const MANIFEST = path.join(ROOT, "lib", "media.generated.ts");
 
-/** Widest we ever need: a full-bleed plate on a 2x display, and no wider. */
-const MAX_WIDTH = 2400;
-const QUALITY = 82;
+/**
+ * 4K: a full-bleed plate on a 2x display is ~3500 device px, and next/image's
+ * largest breakpoint is 3840.
+ */
+const MAX_WIDTH = 3840;
+
+/**
+ * High on purpose. The renders are dark gradients held smooth by their own fine
+ * grain; lossy WebP below ~90 smooths the grain away and the falloff steps into
+ * visible bands. This file is also only the first of two encodes — next/image
+ * re-encodes it at the quality set in next.config.ts — so it has to arrive close
+ * to lossless.
+ */
+const QUALITY = 95;
+const WEBP = { quality: QUALITY, smartSubsample: true };
+
+/** Part of every stamp, so changing the encode changes every URL. */
+const ENCODING = JSON.stringify({ MAX_WIDTH, WEBP });
 
 /**
  * Footage is capped harder than stills. A plate is at most ~1300 CSS px wide, and
@@ -141,7 +160,7 @@ for (const slug of slugs) {
           "-frames:v", "1", "-vf", scale(MAX_FILM_WIDTH),
           frame,
         ]);
-        await sharp(frame).webp({ quality: QUALITY }).toFile(target);
+        await sharp(frame).webp(WEBP).toFile(target);
         await rm(frame);
         processed += 1;
       } else {
@@ -165,7 +184,7 @@ for (const slug of slugs) {
       await sharp(source)
         .rotate() // honour EXIF before we read dimensions off the result
         .resize({ width: MAX_WIDTH, withoutEnlargement: true })
-        .webp({ quality: QUALITY })
+        .webp(WEBP)
         .toFile(target);
       processed += 1;
     } else {

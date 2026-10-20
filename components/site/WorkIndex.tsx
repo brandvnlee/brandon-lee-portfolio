@@ -72,7 +72,6 @@ export default function WorkIndex() {
               className="work__row"
               key={project.slug}
               data-slug={project.slug}
-              data-restricted={project.restricted ? "true" : undefined}
             >
               <Link href={`/work/${project.slug}`} className="work__link">
                 <span className="rule work__edge" data-rule aria-hidden="true" />
@@ -88,11 +87,9 @@ export default function WorkIndex() {
                       priority={index === 0}
                     />
                   ) : (
-                    /* A tint block, not the black panel this used to be — on a
-                       black page that was invisible. The withholding is stated
-                       by the spec line reading 00 PL., which is a fact rather
-                       than a joke about redaction. */
-                    <span className="work__redacted" />
+                    /* A tint block for a project with no hero yet, rather than
+                       a black panel that would vanish on a black page. */
+                    <span className="work__blank" />
                   )}
                 </span>
 
@@ -100,12 +97,7 @@ export default function WorkIndex() {
                   {String(index + 1).padStart(2, "0")}
                 </span>
 
-                <span className="work__sub micro">
-                  {project.subtitle}
-                  {project.restricted ? (
-                    <span className="work__tag">Restricted</span>
-                  ) : null}
-                </span>
+                <span className="work__sub micro">{project.subtitle}</span>
 
                 <SplitText
                   as="h2"

@@ -245,8 +245,18 @@ deployed.
 
 `npm run media` derives what actually ships:
 
-- `public/media/**.webp` — capped at 2400px wide, quality 82. 180MB → 6.7MB.
+- `public/media/**.webp` — capped at 3840px wide (4K), quality 95. ~730MB → ~75MB.
 - `lib/media.generated.ts` — the intrinsic dimensions of every output.
+
+The quality is high because of **banding**. The renders are dark gradients kept
+smooth by their own fine grain, and every lossy encode smooths the grain away
+until the falloff steps. There are two encodes in the chain — this script, then
+`next/image` resizing for the screen — and both are at 95: the optimiser's is set
+by `images.qualities` in `next.config.ts`, which as the only allowed value applies
+to every `<Image>` without a prop. AVIF was tested and bands worse than WebP here.
+The encode settings are part of each file's stamp, so changing them changes every
+URL and no cache can keep serving the old encode. Lower either quality only after
+checking a dark falloff with its levels pushed up.
 
 The manifest exists because `next/image` needs real dimensions to lay an image
 out, and these renders are a mix of 16:9 and 4:5 — guessing a single ratio would
@@ -480,7 +490,7 @@ function of player width, not of the page.
 
 `components/site/Film.tsx` serves the still itself and mounts the iframe on click
 with `autoplay=1`, so it is still one click to watch. That fixes the grey at the
-root and pays twice more: the still is a 2400px frame from the project rather than
+root and pays twice more: the still is a full-size frame from the project rather than
 a 640px screengrab, and **no YouTube script, frame or cookie is fetched until
 someone asks for the film** — a case page now makes zero third-party requests.
 
@@ -518,8 +528,7 @@ file did not contain.
 
 ### Contact
 
-`components/site/ContactLink.tsx`, used by the header, the footer, and the
-Roadster walkthrough request.
+`components/site/ContactLink.tsx`, used by the header and the footer.
 
 A `mailto:` href alone is not enough. It only opens something if the machine has
 a mail client registered as the protocol handler, and most people use webmail in
@@ -539,30 +548,38 @@ handler: visit Gmail, click the protocol-handler icon in the address bar, and
 allow it. Chrome also exposes this under Settings → Privacy and security → Site
 settings → Additional permissions → Protocol handlers.
 
-### Work under NDA
+### Roadster
 
-Roadster is marked `restricted: true`. Its page is the title, the statement and
-nothing else — then the footer. On the index it carries a "Restricted" tag and a
-tint panel behind the title; the tag is a hard-edged field, not a pill, since a
-rounded shape is the one un-tactical form on a page built from hairlines and
-right angles.
+Roadster was held under NDA and shipped as a title and a statement only, with a
+"Restricted" tag on the index. The work is public now, so that treatment — the
+`restricted` flag, the tag, and the page that stopped without a next link — has
+been removed rather than left dormant. It is a case page like the others: the
+Tesla film first (`cvKIR-c1SsU`, behind its own HD thumbnail as the poster), then
+the 21 photographs in the order they were numbered.
 
-Three things were tried on that page and cut. **Crop marks around an empty 16:9
-field**, which was meant to draw the absence — it read as a broken image. **Body
-sections** headed "Why this page is empty" and "What can be discussed", which
-spent four paragraphs restating a fact the summary already states in one. **A
-"Request a private walkthrough" link**, redundant beside the contact address in
-the footer. Stopping after the statement is more confident than furnishing the
-space, so `sections` is `[]` and there is no next-project link either — the
-header carries the way back.
+Its three sections name their own plates, as Mantra and Nomad do: the cabin and
+body details under the XB-70 / Esprit statement, the launch frames and the
+astronaut under the Tesla–SpaceX one, and the two night frames under the last. The
+launch frames are numbered fourth but sit in the second section, because that is
+the statement they illustrate. Its `tools` line
+lists disciplines (Art Direction, Visualisation, VFX, CGI) rather than software, in
+the same slot so the colophon reads the same on every page.
 
-No fragment of restricted work appears anywhere in the repo, and nothing is
-suggested through cropping or blurring. If you add another NDA project, set the
-flag, leave `images` empty and leave `sections` empty; the treatment follows
-automatically.
+`Roadster_79.jpg` (the top view, third plate) and `Roadster_73.jpg` (the rear,
+paired with `16.jpg`) replaced `3.jpg` and `15.jpg`, which stay in the folder
+unused. `Roadster_79.jpg` is cropped in like the first plates; its original is
+in `_originals/` with the others.
 
-Note that Tenet's files are all named `roadster_*` while being a personal
-project. Worth renaming before someone reads the URLs and assumes otherwise.
+`1.jpg`–`3.jpg` are **crops**, not the originals: the studio frames had the car in
+a third of the frame in a field of black, which at full width read as empty page.
+The untouched files are in `public/work/roadster/_originals/` — the pipeline only
+reads the top level of a slug folder, so that subfolder never ships. Re-crop from
+there, never from the cropped files.
+
+Sources are in `public/work/roadster/`, not `public/media/roadster/`. The latter
+is the pipeline's output: files dropped there skip conversion and ship at full
+camera size, and once the slug has sources `npm run media` deletes anything in it
+that it did not write.
 
 ## Font
 

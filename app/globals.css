@@ -56,8 +56,8 @@
 
      hair  — subdivision inside a field that is already framed.
      rule  — every row boundary and section break. The workhorse.
-     heavy — three places only: the footer, the next-project link, the NDA
-             seal. A fourth use and it stops meaning "major boundary".
+     heavy — two places only: the footer and the next-project link. A third
+             use and it stops meaning "major boundary".
      -------------------------------------------------------------------------- */
   --rule-hair: color-mix(in srgb, var(--fg) 22%, var(--bg));
   --rule: color-mix(in srgb, var(--fg) 40%, var(--bg));
@@ -459,16 +459,6 @@ ul {
   transition: opacity var(--dur-fast) var(--ease-out);
 }
 
-/* A hard-edged field. A pill is the one un-tactical shape on a page built from
-   hairlines and right angles. */
-.work__tag {
-  border: 1px solid var(--rule);
-  background: var(--tint);
-  padding: 0.25rem 0.5rem 0.2rem;
-  font-size: var(--fs-nano);
-  letter-spacing: var(--track-nano);
-}
-
 /* --------------------------------------------------------------------------
    FITTED TITLES
 
@@ -641,7 +631,7 @@ ul {
   opacity: var(--w-faint);
 }
 
-.work__redacted {
+.work__blank {
   position: absolute;
   inset: 0;
   background: var(--tint);

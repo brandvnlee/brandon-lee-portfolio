@@ -59,6 +59,8 @@ export default async function ProjectPage({
   if (!project) notFound();
 
   const index = projects.findIndex((p) => p.slug === project.slug);
+  // The chain wraps, and the label says so on the way back to the start.
+  const wraps = index === projects.length - 1;
   const next = projects[(index + 1) % projects.length];
 
   // Sections that name their own plates are placed exactly as written. Where none
@@ -154,15 +156,11 @@ export default async function ProjectPage({
         </div>
       ))}
 
-      {/* The NDA entry stops after its statement. Nothing below it, so there is
-          no next-project link either — the header carries the way back. */}
-      {project.restricted ? null : (
-        <Link className="case__next" href={`/work/${next.slug}`}>
-          <span className="rule rule--heavy" data-rule aria-hidden="true" />
-          <span className="micro">Next project</span>
-          <SplitText as="span" className="case__nextTitle" text={next.title} />
-        </Link>
-      )}
+      <Link className="case__next" href={`/work/${next.slug}`}>
+        <span className="rule rule--heavy" data-rule aria-hidden="true" />
+        <span className="micro">{wraps ? "Back to" : "Next project"}</span>
+        <SplitText as="span" className="case__nextTitle" text={next.title} />
+      </Link>
 
       <Footer />
     </main>
