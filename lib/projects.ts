@@ -287,7 +287,7 @@ export const projects: Project[] = [
       "The Roadster is an uncompromising pursuit of the extraordinary. Born from the ambition to defy the impossible, the Roadster blurs the line between automobile and rocket, redefining the limits of speed, acceleration, and human capability.",
     // Disciplines rather than software, but set in the same place and the same
     // way as the other projects' tool lists so the colophon reads as one system.
-    tools: ["Art Direction", "Visualisation", "VFX", "CGI"],
+    tools: ["Art Direction", "Visualization", "VFX", "CGI"],
     // A looser cut of plate 1 than the one on the case page, so the car sits at
     // the same scale behind its title as the other heroes do.
     hero: "roadster/roadster_hero.jpg",

@@ -562,7 +562,7 @@ body details under the XB-70 / Esprit statement, the launch frames and the
 astronaut under the Tesla–SpaceX one, and the two night frames under the last. The
 launch frames are numbered fourth but sit in the second section, because that is
 the statement they illustrate. Its `tools` line
-lists disciplines (Art Direction, Visualisation, VFX, CGI) rather than software, in
+lists disciplines (Art Direction, Visualization, VFX, CGI) rather than software, in
 the same slot so the colophon reads the same on every page.
 
 `Roadster_79.jpg` (the top view, third plate) and `Roadster_73.jpg` (the rear,
